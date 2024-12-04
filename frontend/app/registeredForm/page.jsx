@@ -40,12 +40,11 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = [
   "DateTimeUtc",
-  "DateTimeUtc",
+  "vin_no",
   "policy_no",
   "start_date",
   "end_date",
   "DealershipName",
-  "vin_no",
   "insurance",
   "stock",
   "account",

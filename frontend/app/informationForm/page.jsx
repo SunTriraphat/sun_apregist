@@ -46,7 +46,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "brand",
   "Model",
   "vin_no",
-  "insurance",
+  "InsuranceProvider",
   "stock",
   "payment_month",
   "date_recieved",
@@ -92,6 +92,8 @@ export default function App() {
       // const response = await axios.get(`${API_URL}getdata_main`);
 
       const response = await axios.post(`${API_URL}getall_data`);
+      console.log('response',response);
+      
       setData(response.data);
       setIsLoading(false)
     } catch (error) {

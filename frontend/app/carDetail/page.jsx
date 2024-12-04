@@ -96,7 +96,7 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       Vin No.
                     </p>
-                    <p className="font-semibold">{filteredData.vin_no ? filteredData.vin_no : '-'}</p>
+                    <p className="font-semibold">{filteredData.Vin ? filteredData.Vin : '-'}</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
@@ -161,7 +161,7 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       Vin No.
                     </p>
-                    <p className="font-semibold">{filteredData.vin_no ? filteredData.vin_no : "-"}</p>
+                    <p className="font-semibold">{filteredData.Vin ? filteredData.Vin : "-"}</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
@@ -211,7 +211,7 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       Vin No.
                     </p>
-                    <p className="font-semibold">{filteredData.vin_no? filteredData.vin_no : '-'}</p>
+                    <p className="font-semibold">{filteredData.Vin? filteredData.Vin : '-'}</p>
                   </div>
 
                   <div className="mb-2 pb-2 border-b">
