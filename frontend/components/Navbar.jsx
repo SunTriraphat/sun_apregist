@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "next-auth/react";
 import { logoutUser } from "../app/store/slice/loginSlice";
 import { useRouter } from "next/navigation";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenOut, setIsOpenOut] = useState(false);
@@ -47,8 +48,8 @@ function Navbar() {
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 shadow-sm w-full">
-      <div className="  flex flex-wrap items-center justify-between mx-auto pt-5 pb-5 pr-10 pl-10">
-        <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+      <div className="flex flex-wrap items-center justify-between mx-auto pt-5 pb-5 pr-10 pl-10">
+        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             AP Regist
           </span>
@@ -92,24 +93,24 @@ function Navbar() {
             </li>
             <Dropdown>
               <DropdownTrigger className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" style={{ cursor: "pointer" }}>
-
                 ตรวจสอบข้อมูล
-
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-
-                <DropdownItem ><a href="/informationForm">แจ้งประกันภัย/ชำระเบี้ย </a></DropdownItem>
-                <DropdownItem ><a href="/registeredForm">จดทะเบียน </a></DropdownItem>
-
+                <DropdownItem>
+                  <Link href="/informationForm">
+                    แจ้งประกันภัย/ชำระเบี้ย
+                  </Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link href="/registeredForm">
+                    จดทะเบียน
+                  </Link>
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
 
-            
             <li className="flex items-center space-x-2">
-              <div
-                className="relative inline-block text-left"
-                ref={dropdownRef}
-              >
+              <div className="relative inline-block text-left" ref={dropdownRef}>
                 <button
                   type="button"
                   className="flex items-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
@@ -128,12 +129,12 @@ function Navbar() {
                   id="dropdownMenu"
                 >
                   <div className="py-1">
-                    <a
+                    <button
                       onClick={handleLogout}
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
                       Logout
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
