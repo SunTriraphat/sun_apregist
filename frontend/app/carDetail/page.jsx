@@ -58,80 +58,225 @@ function Page() {
     <>
       <Navbar />
 
-        {filteredData ? (
-          <>
-            <div className="m-5 pl-8">
-              <h1 className="text-2xl font-bold text-gray-800">General Vehicle</h1>
-              <Divider style={{ width: "20%" }} />
-            </div>
-            <div className="pl-8">
-              <div className="bg-white pl-5 rounded">
-                <div>
-                  <div className="grid grid-cols-4 gap-4 mt-9">
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        วันที่เบิกรถ
-                      </p>
-                      <p className="font-semibold">{filteredData.date}</p>
-                    </div>
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        Dealer
-                      </p>
-                      <p className="font-semibold">{filteredData.DealershipName ? filteredData.DealershipName : '-'}</p>
-                    </div>
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        Model
-                      </p>
-                      <p className="font-semibold">{filteredData.Model ? filteredData.Model : '-'}</p>
-                    </div>
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        Sub Model
-                      </p>
-                      <p className="font-semibold">{filteredData.SubModel ? filteredData.SubModel : '-'}</p>
-                    </div>
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        Vin No.
-                      </p>
-                      <p className="font-semibold">{filteredData.vin_no ? filteredData.vin_no : '-'}</p>
-                    </div>
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        Dealer
-                      </p>
-                      <p className="font-semibold">{filteredData.DealershipName ? filteredData.DealershipName : '-'}</p>
-                    </div>
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        Date Delivery
-                      </p>
-                      <p className="font-semibold">{filteredData.Date_Delivery}</p>
-                    </div>
+      {filteredData ? (
+        <>
+          <div className="m-5 pl-8">
+            <h1 className="text-2xl font-bold text-gray-800">General Vehicle</h1>
+            <Divider style={{ width: "20%" }} />
+          </div>
+          <div className="pl-8">
+            <div className="bg-white pl-5 rounded">
+              <div >
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      วันที่เบิกรถ
+                    </p>
+                    <p className="font-semibold">{filteredData.date}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Dealer
+                    </p>
+                    <p className="font-semibold">{filteredData.DealershipName ? filteredData.DealershipName : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Model
+                    </p>
+                    <p className="font-semibold">{filteredData.Model ? filteredData.Model : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Sub Model
+                    </p>
+                    <p className="font-semibold">{filteredData.SubModel ? filteredData.SubModel : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Vin No.
+                    </p>
+                    <p className="font-semibold">{filteredData.vin_no ? filteredData.vin_no : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Dealer
+                    </p>
+                    <p className="font-semibold">{filteredData.DealershipName ? filteredData.DealershipName : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Date Delivery
+                    </p>
+                    <p className="font-semibold">{filteredData.Date_Delivery}</p>
+                  </div>
+                </div>
+
+                <h1 className="mt-5 text-2xl font-bold text-gray-800">Insurance Effective</h1>
+                <Divider style={{ width: "20%" }} />
+
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      ชื่อลูกค้า
+                    </p>
+                    <p className="font-semibold">{filteredData.CustomerFirstName} {filteredData.CustomerLastName}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-5 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      บริษัทประกัน
+                    </p>
+                    <p className="font-semibold">
+                      {filteredData.InsuranceProvider ? filteredData.InsuranceProvider : '-'}
+                    </p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Dealer
+                    </p>
+                    <p className="font-semibold">{filteredData.DealershipName ? filteredData.DealershipName : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Model
+                    </p>
+                    <p className="font-semibold">{filteredData.Model? filteredData.Model: "-"}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      คุ้มครอง
+                    </p>
+                    <p className="font-semibold">{filteredData.start_date ? formatDateToDMY(filteredData.start_date)  : "-" }</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      สิ้นสุด
+                    </p>
+                    <p className="font-semibold">{filteredData.end_date ? filteredData.end_date : "-"}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Vin No.
+                    </p>
+                    <p className="font-semibold">{filteredData.vin_no ? filteredData.vin_no : "-"}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Dealer
+                    </p>
+                    <p className="font-semibold">{filteredData.DealershipName ? filteredData.DealershipName : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Finance
+                    </p>
+                    <p className="font-semibold">{filteredData.Date_Delivery}</p>
                   </div>
 
-                  <h1 className="mt-5 text-2xl font-bold text-gray-800">Insurance Effective</h1>
-                  <Divider style={{ width: "20%" }} />
-
-                  <div className="grid grid-cols-4 gap-4 mt-9">
-                    <div className="mb-2 pb-2 border-b">
-                      <p className="font-light text-sm text-gray-700 mb-1">
-                        ชื่อลูกค้า
-                      </p>
-                      <p className="font-semibold">{filteredData.CustomerFirstName} {filteredData.CustomerLastName}</p>
-                    </div>
+                </div>
+                <h1 className="mt-5 text-2xl font-bold text-gray-800">Insurance Payment</h1>
+                <Divider style={{ width: "20%" }} />
+                <div className="grid grid-cols-5 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      บริษัทประกัน
+                    </p>
+                    <p className="font-semibold">
+                      {filteredData.InsuranceProvider ? filteredData.InsuranceProvider : '-'}
+                    </p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      กรมธรรม์
+                    </p>
+                    <p className="font-semibold">{filteredData.policy_no ? filteredData.policy_no : '-'}</p>
                   </div>
 
-                  {/* More sections here as per your code */}
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      คุ้มครอง
+                    </p>
+                    <p className="font-semibold">{filteredData.start_date ? formatDateToDMY(filteredData.start_date) : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      สิ้นสุด
+                    </p>
+                    <p className="font-semibold">{filteredData.end_date ? formatDateToDMY(filteredData.end_date) : '-'}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      Vin No.
+                    </p>
+                    <p className="font-semibold">{filteredData.vin_no? filteredData.vin_no : '-'}</p>
+                  </div>
+
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      วันที่ชำระ
+                    </p>
+                    <p className="font-semibold">{filteredData.payment_month ? filteredData.payment_month : "-"}</p>
+                  </div>
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      เลขที่ชำระ
+                    </p>
+                    <p className="font-semibold">{filteredData.paymentNumber}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      พรบ
+                    </p>
+                    <p className="font-semibold">{filteredData.act_no ? filteredData.act_no : '-'}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      ประเภท 1
+                    </p>
+                    <p className="font-semibold">{filteredData.type1}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      ประกันอะไหล่
+                    </p>
+                    <p className="font-semibold">{filteredData.partsInsurance}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      รถช่วยเหลือฉุกเฉิน
+                    </p>
+                    <p className="font-semibold">
+                      {filteredData.emergencyAssistance}
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-9">
+                  <div className="mb-2 pb-2 border-b">
+                    <p className="font-light text-sm text-gray-700 mb-1">
+                      EV 3.0
+                    </p>
+                    <p className="font-semibold">{filteredData.ev3}</p>
+                  </div>
                 </div>
               </div>
+
             </div>
-          </>
-        ) : (
-          <div className="pl-12">ไม่พบข้อมูลที่ตรงกับการค้นหา</div>
-        )}
+          </div></>
+
+      ) : (
+        <div className="pl-12">ไม่พบข้อมูลที่ตรงกับการค้นหา</div>
+      )}
   
     </>
   );

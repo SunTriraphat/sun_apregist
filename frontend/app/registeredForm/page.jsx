@@ -40,6 +40,7 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = [
   "DateTimeUtc",
+  "DateTimeUtc",
   "policy_no",
   "start_date",
   "end_date",
@@ -135,6 +136,8 @@ export default function App() {
 
 
     switch (columnKey) {
+      case "vin_no":
+        return <a style={{ textDecoration: 'underline' }} href={`/carDetail?vin=${cellValue}`}>{cellValue}</a>
       case "document":
       case "policy_no":
       case "DEALER CODE":
