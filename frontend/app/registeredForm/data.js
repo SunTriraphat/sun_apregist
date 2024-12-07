@@ -5,7 +5,7 @@ const columns = [
   { key: "policy_no", label: "เลขกรมธรรม์" },
   { key: "start_date", label: "คุ้มครอง" },
   { key: "end_date", label: "สิ้นสุด" },
-  { key: "Dealershiplabel", label: "ดีลเลอร์" },
+  { key: "DealershipName", label: "ดีลเลอร์" },
   { key: "model", label: "วันที่รับเอกสาร" },
   { key: "model", label: "วันที่เอกสารครบ" },
   { key: "model", label: "จดทะเบียน" },

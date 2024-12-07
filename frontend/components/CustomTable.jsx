@@ -16,25 +16,48 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedColumn, setSelectedColumn] = useState(defaultColumn);
-  console.log('top',topContent);
+
   
   // คำนวณจำนวนหน้าทั้งหมด
   const pages = Math.ceil(data.length / rowsPerPage);
 
   // กรองข้อมูลตามการค้นหา
+  // const filteredData = useMemo(() => {
+
+    
+  //   if (!searchQuery) return data;
+  //   if (searchInColumn) {
+  //     return data.filter(item => item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase()));
+  //   } else {
+  //     return data.filter(item => 
+  //       columns.some(column => item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase()))
+  //     );
+  //   }
+  // }, [searchQuery, selectedColumn, data, searchInColumn, columns]);
+
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
-    if (searchInColumn) {
-      return data.filter(item => item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase()));
-    } else {
-      return data.filter(item => 
-        columns.some(column => item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
+  
+    const searchResults = searchInColumn
+      ? data.filter(item =>
+          item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : data.filter(item =>
+          columns.some(column =>
+            item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        );
+  
+    // Remove duplicates based on a unique identifier (e.g., item id or vin_no)
+    const uniqueResults = Array.from(new Set(searchResults.map(item => item.vin_no)))
+      .map(uniqueVinNo => searchResults.find(item => item.vin_no === uniqueVinNo));
+  
+    return uniqueResults;
   }, [searchQuery, selectedColumn, data, searchInColumn, columns]);
-
+  
   // Slice data ให้ตรงกับหน้าปัจจุบัน
   const paginatedData = useMemo(() => {
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return filteredData.slice(start, end);
@@ -87,9 +110,10 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
         </TableHeader>
         <TableBody items={paginatedData}>
           {(item) => (
+            
             <TableRow key={item.vin_no}>
               {columns.map((column) => (
-                <TableCell key={column.key}>
+                <TableCell key={column.key }>
                   {renderFunction(item, column.key)}
                 </TableCell>
               ))}

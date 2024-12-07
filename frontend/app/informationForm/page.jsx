@@ -119,6 +119,7 @@ export default function App() {
       case "policy_no":
       case "start_date":
       case "end_date":
+        
       case "brand":
       case "Model":
 
