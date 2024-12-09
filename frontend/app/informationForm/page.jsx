@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addShowData } from "../store/slice/showDataSlice";
 import CustomTable from "../../components/CustomTable";
 import { Link } from "next/link"
+
 const statusColorMap = {
   Done: "success",
   Progress: "primary",
@@ -85,6 +86,29 @@ export default function App() {
   }, [filterValue]);
 
 
+  const formatDateToDMY = (date) => {
+    if (!date) return ""; // Handle cases where the date might be undefined
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(new Date(date));
+  };
+
+  const addOneYearAndFormat = (date) => {
+    console.log('date', !date);
+
+    if (!date) {
+      return "";
+    } else {
+      const inputDate = new Date(date); // Parse the input date
+      console.log('inputDate', inputDate, date);
+      // inputDate.setFullYear(inputDate.getFullYear() + 1); // Add one year
+      // return formatDateToDMY(inputDate); // Format using the existing function
+    }
+  };
+
+
   const fetchData = async () => {
 
     try {
@@ -92,8 +116,8 @@ export default function App() {
       // const response = await axios.get(`${API_URL}getdata_main`);
 
       const response = await axios.post(`${API_URL}getall_data`);
-      console.log('response',response);
-      
+      console.log('response', response);
+
       setData(response.data);
       setIsLoading(false)
     } catch (error) {
@@ -115,21 +139,6 @@ export default function App() {
     switch (columnKey) {
       case "vin_no":
         return <a style={{ textDecoration: 'underline' }} href={`/carDetail?vin=${cellValue}`}>{cellValue}</a>
-      case "DateTimeUtc":
-      case "policy_no":
-      case "start_date":
-      case "end_date":
-        
-      case "brand":
-      case "Model":
-
-      case "insurance":
-      case "stock":
-      case "payment_month":
-      case "date_recieved":
-      case "remark":
-
-        return cellValue;
       case "status":
         return (
           <Chip
@@ -147,7 +156,7 @@ export default function App() {
   }
 
   return (
-    <div>
+    <div className="">
 
       {data.length > 0 ?
         <CustomTable
@@ -158,7 +167,11 @@ export default function App() {
           searchInColumn={true}
           defaultColumn={columns[6].key}
           topContent={"ตรวจสอบการแจ้งประกันภัย/ชำระเบี้ย"}
-        /> : null
+        /> :
+        <div className="flex h-screen justify-center items-center">
+          <Spinner size="lg" label="Loading...." />
+        </div>
+
       }
 
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo,useEffect} from "react";
 import {
   Table,
   TableHeader,
@@ -15,11 +15,17 @@ import Navbar from "./Navbar";
 export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key,topContent}) {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [pages, setPages] = useState("");
   const [selectedColumn, setSelectedColumn] = useState(defaultColumn);
 
   
   // คำนวณจำนวนหน้าทั้งหมด
-  const pages = Math.ceil(data.length / rowsPerPage);
+  // const pages = Math.ceil(data.length / rowsPerPage);
+
+  useEffect(() => {
+    setPages(Math.ceil(data.length / rowsPerPage)) 
+  }, []);
+
 
   // กรองข้อมูลตามการค้นหา
   // const filteredData = useMemo(() => {
@@ -36,8 +42,11 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
   // }, [searchQuery, selectedColumn, data, searchInColumn, columns]);
 
   const filteredData = useMemo(() => {
-    if (!searchQuery) return data;
-  
+    if (!searchQuery){
+      setPages(Math.ceil(data.length / rowsPerPage)) 
+      return data;
+    } 
+    
     const searchResults = searchInColumn
       ? data.filter(item =>
           item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
@@ -47,17 +56,16 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
             item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
           )
         );
-  
     // Remove duplicates based on a unique identifier (e.g., item id or vin_no)
     const uniqueResults = Array.from(new Set(searchResults.map(item => item.vin_no)))
       .map(uniqueVinNo => searchResults.find(item => item.vin_no === uniqueVinNo));
-  
+      setPage(1)
+      setPages(Math.ceil(uniqueResults.length / rowsPerPage)) 
     return uniqueResults;
   }, [searchQuery, selectedColumn, data, searchInColumn, columns]);
   
   // Slice data ให้ตรงกับหน้าปัจจุบัน
   const paginatedData = useMemo(() => {
-
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return filteredData.slice(start, end);

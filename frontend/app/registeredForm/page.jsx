@@ -189,7 +189,9 @@ export default function App() {
           searchInColumn={true}
           defaultColumn={columns[1].key}
           topContent={"ตรวจสอบการจดทะเบียน"}
-        /> : null
+        /> :  <div className="flex h-screen justify-center items-center">
+        <Spinner size="lg" label="Loading...." />
+      </div>
       }
 
     </div>

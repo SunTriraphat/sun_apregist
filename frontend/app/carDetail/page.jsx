@@ -45,14 +45,7 @@ function Page() {
     setSearchQuery(event.target.value);
   };
 
-  const formatDateToDMY = (date) => {
-    if (!date) return ""; // Handle cases where the date might be undefined
-    return new Intl.DateTimeFormat("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }).format(new Date(date));
-  };
+ 
 
   return (
     <>
@@ -149,7 +142,7 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       คุ้มครอง
                     </p>
-                    <p className="font-semibold">{filteredData.start_date ? formatDateToDMY(filteredData.start_date)  : "-" }</p>
+                    <p className="font-semibold">{filteredData.start_date ? filteredData.start_date  : "-" }</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
@@ -199,13 +192,13 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       คุ้มครอง
                     </p>
-                    <p className="font-semibold">{filteredData.start_date ? formatDateToDMY(filteredData.start_date) : '-'}</p>
+                    <p className="font-semibold">{filteredData.start_date ? filteredData.start_date : '-'}</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
                       สิ้นสุด
                     </p>
-                    <p className="font-semibold">{filteredData.end_date ? formatDateToDMY(filteredData.end_date) : '-'}</p>
+                    <p className="font-semibold">{filteredData.end_date ? filteredData.end_date : '-'}</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
