@@ -9,14 +9,14 @@ const columns = [
   { key: "model", label: "วันที่รับเอกสาร" },
   { key: "model", label: "วันที่เอกสารครบ" },
   { key: "model", label: "จดทะเบียน" },
-  { key: "stock", label: "ส่งเอกสาร" },
-  { key: "date_payment", label: "ทะเบียน" },
-  { key: "date_recieved", label: "เล่มทะเบียน" },
+  { key: "document", label: "ส่งเอกสาร" },
+  { key: "registration", label: "ทะเบียน" },
+  { key: "registration_book", label: "เล่มทะเบียน" },
   { key: "remark", label: "หมายเหตุ" },
   // { key: "date_accounted", name: "Date Accounted" },
   // { key: "billing", name: "Billing" },
   // { key: "status", name: "Status" },
-  // { key: "actions", name: "Actions" },
+  { key: "actions", name: "Actions" },
 ];
 
 const statusOptions = [

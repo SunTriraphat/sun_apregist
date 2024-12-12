@@ -8,6 +8,11 @@ import {
   TableCell,
   Pagination,
   Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button 
 } from "@nextui-org/react";
 
 import Navbar from "./Navbar";
@@ -18,28 +23,11 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
   const [pages, setPages] = useState("");
   const [selectedColumn, setSelectedColumn] = useState(defaultColumn);
 
-  
-  // คำนวณจำนวนหน้าทั้งหมด
-  // const pages = Math.ceil(data.length / rowsPerPage);
 
   useEffect(() => {
     setPages(Math.ceil(data.length / rowsPerPage)) 
   }, []);
 
-
-  // กรองข้อมูลตามการค้นหา
-  // const filteredData = useMemo(() => {
-
-    
-  //   if (!searchQuery) return data;
-  //   if (searchInColumn) {
-  //     return data.filter(item => item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase()));
-  //   } else {
-  //     return data.filter(item => 
-  //       columns.some(column => item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase()))
-  //     );
-  //   }
-  // }, [searchQuery, selectedColumn, data, searchInColumn, columns]);
 
   const filteredData = useMemo(() => {
     if (!searchQuery){
@@ -70,9 +58,18 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
     const end = start + rowsPerPage;
     return filteredData.slice(start, end);
   }, [page, filteredData, rowsPerPage]);
+  
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div>
+     
       <Navbar />
       <p className="ml-5 mt-5 text-lg">{topContent}</p>
       {/* Search and Column Select */}
@@ -144,6 +141,7 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
           color="default"
         />
       </div>
+      
     </div>
   );
 }
