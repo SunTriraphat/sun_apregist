@@ -12,7 +12,7 @@ const columns = [
   { key: "document", label: "ส่งเอกสาร" },
   { key: "registration", label: "ทะเบียน" },
   { key: "registration_book", label: "เล่มทะเบียน" },
-  { key: "remark", label: "หมายเหตุ" },
+  { key: "remark_detail", label: "หมายเหตุ" },
   // { key: "date_accounted", name: "Date Accounted" },
   // { key: "billing", name: "Billing" },
   // { key: "status", name: "Status" },

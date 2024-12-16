@@ -56,7 +56,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "account",
   "date_payment",
   "date_recieved",
-  "remark",
+  "remark_detail",
   "document",
   "registration",
   "registration_book",
@@ -87,7 +87,7 @@ export default function App() {
     document: '',
     registration: '',
     registration_book: '',
-    remark: ''
+    remark_detail: ''
   });
 
 
