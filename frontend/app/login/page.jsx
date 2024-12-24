@@ -98,6 +98,7 @@ function Login() {
           console.log("ล็อคอินสำเร็จ");
           localStorage.setItem('isAuth', true);
           dispatch(addUser([response.data.data]));
+          localStorage.setItem("user", JSON.stringify(response.data.data));
 
           router.push("/homepage");
         } else {

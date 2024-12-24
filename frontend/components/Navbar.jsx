@@ -11,8 +11,11 @@ function Navbar() {
   const [isOpenOut, setIsOpenOut] = useState(false);
   const dispatch = useDispatch(); // Initialize dispatch
   const dropdownRef = useRef(null);
-  const userData = useSelector((state) => state.user.user);
+  // const userData = useSelector((state) => state.user.user);
+  const userData = JSON.parse(localStorage.getItem("user"));
   const router = useRouter();
+
+  console.log(userData);
 
   const handleLogout = async () => {
     try {
@@ -46,6 +49,7 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 shadow-sm w-full">
@@ -137,6 +141,11 @@ function Navbar() {
                   className={`absolute left-0 transform translate-x-0 md:left-auto md:right-0 z-10 w-48 mt-2 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 ${isOpenOut ? "block" : "hidden"}`}
                   id="dropdownMenu"
                 >
+                  <div className="px-4 py-2">
+                    <p className="text-sm text-gray-700 dark:text-gray-200">
+                      {userData?.name ? `Hello, ${userData.name}` : "Welcome, Guest"}
+                    </p>
+                  </div>
                   <div className="py-1">
                     <button
                       onClick={handleLogout}
