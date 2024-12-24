@@ -3,7 +3,8 @@
 import ProviderWrapper from "../app/store/providerWrapper";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {  
+
   return (
     <ProviderWrapper>
       <Component {...pageProps} />

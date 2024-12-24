@@ -1,4 +1,4 @@
-import React, { useState, useMemo,useEffect} from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -12,95 +12,372 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button 
+  ModalContent,
+  Button,
+  Link
 } from "@nextui-org/react";
-
+import Swal from 'sweetalert2';
 import Navbar from "./Navbar";
+import * as XLSX from "xlsx";
+import ImportComponent from "./Import"
 
-export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key,topContent}) {
+export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key, topContent, isAdd, isImport}) {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [pages, setPages] = useState("");
   const [selectedColumn, setSelectedColumn] = useState(defaultColumn);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [detailData, setDetailData] = useState();
+  const [loadingModal, setLoadingModal] = useState(false);
 
-
+  const [excelData, setExcelData] = useState([]);
+  const [fileName, setFileName] = useState("");
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
-    setPages(Math.ceil(data.length / rowsPerPage)) 
+    setPages(Math.ceil(data.length / rowsPerPage))
   }, []);
 
 
   const filteredData = useMemo(() => {
-    if (!searchQuery){
-      setPages(Math.ceil(data.length / rowsPerPage)) 
+    if (!searchQuery) {
+      setPages(Math.ceil(data.length / rowsPerPage))
       return data;
-    } 
-    
+    }
+
     const searchResults = searchInColumn
       ? data.filter(item =>
-          item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        item[selectedColumn]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
       : data.filter(item =>
-          columns.some(column =>
-            item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        );
+        columns.some(column =>
+          item[column.key]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
     // Remove duplicates based on a unique identifier (e.g., item id or vin_no)
     const uniqueResults = Array.from(new Set(searchResults.map(item => item.vin_no)))
       .map(uniqueVinNo => searchResults.find(item => item.vin_no === uniqueVinNo));
-      setPage(1)
-      setPages(Math.ceil(uniqueResults.length / rowsPerPage)) 
+    setPage(1)
+    setPages(Math.ceil(uniqueResults.length / rowsPerPage))
     return uniqueResults;
   }, [searchQuery, selectedColumn, data, searchInColumn, columns]);
-  
+
   // Slice data ให้ตรงกับหน้าปัจจุบัน
   const paginatedData = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     return filteredData.slice(start, end);
   }, [page, filteredData, rowsPerPage]);
-  
+
   const openModal = () => {
     setIsModalOpen(true);
   };
+
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
+  const openImportModal = () => {
+    setIsImportModalOpen(true);
+  };
+
+  const closeImportModal = () => {
+    setIsImportModalOpen(false);
+  };
+
+  const handleSubmit = async (e) => {
+    await setLoadingModal(true)
+    e.preventDefault();
+
+    // Collect form data using FormData API
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // Convert FormData to JSON
+    const formJSON = Object.fromEntries(formData.entries());
+    console.log('JSON.stringify(formJSON)', JSON.stringify(formJSON));
+
+    Swal.fire({
+      title: "ยืนยันการแก้ไขข้อมูล?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ยกเลิก"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsModalOpen(true)
+        try {
+          const response = await fetch(`${API_URL}add_user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formJSON),
+          });
+          console.log('response', response);
+
+
+          if (response.ok) {
+            form.reset(); // Reset the form after successful submission
+            // setIsLoading(true)
+
+            Swal.fire({
+              title: 'Success',
+              // text: 'The form has been submitted successfully!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            });
+            await setIsModalOpen(false);
+            window.location.reload();
+          } else {
+            Swal.fire({
+              title: 'Failed',
+              text: 'There was an issue with the submission. Please try again',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+            setIsModalOpen(false);
+            form.reset();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred.');
+        } finally {
+          setLoadingModal(false)
+        }
+      } else {
+        setIsModalOpen(true)
+        setLoadingModal(false)
+      }
+    });
+
+
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDetailData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+  const handleImport = async (e) => {
+    // console.log('excelData',excelData);
+    // // const form = excelData;
+    // const formData = new FormData(excelData);
+    console.log('excelData',excelData);
+    
+    // Convert FormData to JSON
+    try {
+      const response = await fetch(`${API_URL}import_info_form`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(excelData),
+      });
+      console.log('response', response);
+
+
+      if (response.ok) {
+        
+        Swal.fire({
+          title: 'Success',
+          // text: 'The form has been submitted successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+        // await setIsModalOpen(false);
+        window.location.reload();
+      } else {
+        Swal.fire({
+          title: 'Failed',
+          text: 'There was an issue with the submission. Please try again',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+        setIsModalOpen(false);
+
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred.');
+    } finally {
+      setLoadingModal(false)
+    }
+  };
+
   return (
     <div>
-     
-      <Navbar />
-      <p className="ml-5 mt-5 text-lg">{topContent}</p>
-      {/* Search and Column Select */}
-      <div className="ml-5 mt-5 flex justify-between items-center mb-4 w-1/4">
-      
-      {/* <p className="ml-5 text-lg">{topContent}</p> */}
-        <Input
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          endContent={
-            searchInColumn && (
-              <div className="flex items-center">
-                <label className="sr-only" htmlFor="column">Search</label>
-                <select
-                  id="column"
-                  name="column"
-                  value={selectedColumn}
-                  onChange={(e) => setSelectedColumn(e.target.value)}
-                  className="outline-none border-0 bg-transparent text-default-400 text-small"
-                >
-                  {columns.map((column) => (
-                    <option key={column.key} value={column.key}>{column.label}</option>
-                  ))}
-                </select>
-              </div>
-            )
-          }
-        />
-      </div>
 
+
+      <p className="ml-5 mt-5 text-lg">{topContent}</p>
+
+
+
+      {/* Search and Column Select */}
+
+      <div className="flex items-center justify-between">
+        <div className="ml-5 mt-5 flex items-center mb-4 w-1/4 space-x-4">
+          {/* <p className="ml-5 text-lg">{topContent}</p> */}
+          <Input
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            endContent={
+              searchInColumn && (
+                <div className="flex items-center ml-4">
+                  <label className="sr-only" htmlFor="column">Search</label>
+                  <select
+                    id="column"
+                    name="column"
+                    value={selectedColumn}
+                    onChange={(e) => setSelectedColumn(e.target.value)}
+                    className="outline-none border-0 bg-transparent text-default-400 text-small"
+                  >
+                    {columns.map((column) => (
+                      <option key={column.key} value={column.key}>{column.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )
+            }
+          />
+        </div>
+        {isAdd == true ?
+          <div className="relative flex items-center gap-2 ml-auto mr-7">
+            <Button size="sm" onClick={() => openModal()} color="primary">Add</Button>
+          </div>
+          : null}
+        {isImport == true ?
+          <div className="relative flex items-center gap-2 ml-auto mr-7">
+            <Button size="sm" onClick={() => openImportModal()} color="primary">Import</Button>
+          </div>
+          : null}
+
+      </div>
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} size={"md"} hideCloseButton={true} onClose={closeModal}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">เพิ่มผู้ใช้งาน</ModalHeader>
+                <ModalBody>
+                  <form id="modalForm" onSubmit={handleSubmit}>
+                    {columns.map((column) => (
+                      column.key !== 'actions' ? (
+                        column.key !== 'salt' ? (
+                          <Input
+                            key={column.key}
+                            label={column.label}
+                            type="text"
+                            id={column.key}
+                            name={column.key}
+                            onChange={handleChange}
+                            className="mb-4"
+                          />
+                        ) : (
+                          <Input
+                            key={column.key}
+                            label={column.label}
+                            type="password"
+                            id={column.key}
+                            name={column.key}
+                            onChange={handleChange}
+                            className="mb-4"
+                          />
+                        )
+                      ) : null // Skip rendering for 'action' key
+                    ))}
+                  </form>
+
+                </ModalBody>
+                <ModalFooter>
+                  {
+                    loadingModal ? (
+                      <Button isLoading color="primary">
+                        Loading
+                      </Button>
+                    ) :
+                      <>
+                        <Button color="danger" variant="light" onPress={onClose} disabled={loadingModal}>
+                          Close
+                        </Button>
+                        <Button color="primary" type="submit" form="modalForm" disabled={loadingModal}>
+                          Submit
+                        </Button>
+                      </>
+
+                  }
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+      {isImportModalOpen && (
+
+        <Modal isOpen={isImportModalOpen} size={"5xl"} hideCloseButton={true} onClose={closeImportModal}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ImportComponent 
+                onValueSend={(val) => setExcelData(val)}
+                />
+                {/* <ModalHeader className="flex flex-col gap-1">Import</ModalHeader>
+                <ModalBody>
+
+                  <div className="mb-4">
+                    <Link onPress={downloadHeaderFile} aria-label="Download Header Excel">
+                      Download Header Excel File
+                    </Link>
+                  </div>
+                  <div className="mb-4">
+                    <Input
+                      aria-label="Upload Excel File"
+                      type="file"
+                      accept=".xlsx,.xls,.csv"
+                      onChange={handleFileUpload}
+                    />
+                    {fileName && <p>Uploaded file: {fileName}</p>}
+                  </div>
+                  <div className="">
+                    {excelData.length > 0 && (
+                      <CustomTable columns={excelUploadColumns} data={excelData} />
+                    )}
+                  </div>
+
+
+
+                </ModalBody> */}
+                <ModalFooter>
+                  {
+                    loadingModal ? (
+                      <Button isLoading color="primary">
+                        Loading
+                      </Button>
+                    ) :
+                      <>
+                        <Button color="danger" variant="light" onPress={onClose} disabled={loadingModal}>
+                          Close
+                        </Button>
+                        <Button color="primary" onClick={handleImport} disabled={loadingModal}>
+                          Submit
+                        </Button>
+                      </>
+
+                  }
+                </ModalFooter> 
+                
+              
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
       <Table
         isCompact
         aria-label="Custom table with pagination"
@@ -115,10 +392,10 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
         </TableHeader>
         <TableBody items={paginatedData}>
           {(item) => (
-            
+
             <TableRow key={item.vin_no}>
               {columns.map((column) => (
-                <TableCell key={column.key }>
+                <TableCell key={column.key}>
                   {renderFunction(item, column.key)}
                 </TableCell>
               ))}
@@ -141,7 +418,7 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
           color="default"
         />
       </div>
-      
+
     </div>
   );
 }

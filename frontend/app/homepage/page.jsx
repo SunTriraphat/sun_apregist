@@ -34,35 +34,35 @@ function Homepage() {
     document: "test",
   });
   console.log("User ", userData);
-  useEffect(() => {
-    const fetchBrand = async () => {
-      try {
-        const response = await axios.get(`${API_BRAND}/api/brands`);
-        setBrand(response.data);
-      } catch (error) {
-        console.error("Fetch data Brand:", error.message);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchBrand = async () => {
+  //     try {
+  //       const response = await axios.get(`${API_BRAND}/api/brands`);
+  //       setBrand(response.data);
+  //     } catch (error) {
+  //       console.error("Fetch data Brand:", error.message);
+  //     }
+  //   };
 
-    fetchBrand();
-  }, [API_BRAND]);
+  //   fetchBrand();
+  // }, [API_BRAND]);
 
-  useEffect(() => {
-    const fetchSubBrand = async () => {
-      if (selectedBrandId) {
-        try {
-          const response = await axios.get(
-            `${API_BRAND}/api/submodels/brand/${selectedBrandId}`
-          );
-          setSubBrand(response.data);
-        } catch (error) {
-          console.error("Fetch data Sub Brand:", error.message);
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSubBrand = async () => {
+  //     if (selectedBrandId) {
+  //       try {
+  //         const response = await axios.get(
+  //           `${API_BRAND}/api/submodels/brand/${selectedBrandId}`
+  //         );
+  //         setSubBrand(response.data);
+  //       } catch (error) {
+  //         console.error("Fetch data Sub Brand:", error.message);
+  //       }
+  //     }
+  //   };
 
-    fetchSubBrand();
-  }, [selectedBrandId, API_BRAND]);
+  //   fetchSubBrand();
+  // }, [selectedBrandId, API_BRAND]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;

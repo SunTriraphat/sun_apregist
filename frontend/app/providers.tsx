@@ -1,6 +1,5 @@
 "use client";
-
-import * as React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NextUIProvider } from "@nextui-org/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
@@ -15,6 +14,23 @@ export interface ProvidersProps {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
+  const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuth');
+    setIsAuth(authStatus === 'true'); // Assume `isAuth` is stored as a string, "true" or "false"
+  }, []);
+
+  useEffect(() => {
+    if (isAuth === false) {
+      router.push('/');
+    }
+  }, [isAuth, router]);
+
+  if (isAuth === null) {
+    // Optionally, render a loading state until authentication is determined
+    return <div></div>;
+  }
 
   return (
     <NextUIProvider navigate={router.push}>

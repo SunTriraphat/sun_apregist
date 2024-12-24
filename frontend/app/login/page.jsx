@@ -96,6 +96,7 @@ function Login() {
         // Case login success
         if (response.data.status === 200) {
           console.log("ล็อคอินสำเร็จ");
+          localStorage.setItem('isAuth', true);
           dispatch(addUser([response.data.data]));
 
           router.push("/homepage");

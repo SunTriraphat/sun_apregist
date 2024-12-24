@@ -76,6 +76,7 @@ export default function App() {
   const [totalPage, setTotalPage] = useState();
   const [totalRecord, setTotalRecord] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [loadingModal, setLoadingModal] = useState(false);
   const [sortDescriptor, setSortDescriptor] = useState({
     column: "dealer_code",
@@ -215,6 +216,8 @@ export default function App() {
   };
 
   const handleSubmit = async (e) => {
+
+
     await setLoadingModal(true)
     e.preventDefault();
 
@@ -226,44 +229,63 @@ export default function App() {
     const formJSON = Object.fromEntries(formData.entries());
     console.log('JSON.stringify(formJSON)', JSON.stringify(formJSON));
 
-    try {
-      const response = await fetch(`${API_URL}detail_edit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formJSON),
-      });
+    Swal.fire({
+      title: "ยืนยันการแก้ไขข้อมูล?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ยกเลิก"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsModalOpen(true)
+        try {
+          const response = await fetch(`${API_URL}detail_edit`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formJSON),
+          });
 
 
-      if (response.ok) {
-        form.reset(); // Reset the form after successful submission
-        // setIsLoading(true)
-        await fetchData()
+          if (response.ok) {
+            form.reset(); // Reset the form after successful submission
+            // setIsLoading(true)
+            await fetchData()
 
-        Swal.fire({
-          title: 'Success',
-          // text: 'The form has been submitted successfully!',
-          icon: 'success',
-          confirmButtonText: 'OK',
-        });
-        setIsModalOpen(false);
+            Swal.fire({
+              title: 'Success',
+              // text: 'The form has been submitted successfully!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            });
+            setIsModalOpen(false);
+          } else {
+            Swal.fire({
+              title: 'Failed',
+              text: 'There was an issue with the submission. Please try again',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+            setIsModalOpen(false);
+            form.reset();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred.');
+        } finally {
+          setLoadingModal(false)
+        }
       } else {
-        Swal.fire({
-          title: 'Failed',
-          text: 'There was an issue with the submission. Please try again',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
-        setIsModalOpen(false);
-        form.reset();
+        setIsModalOpen(true)
+        setLoadingModal(false)
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred.');
-    } finally {
-      setLoadingModal(false)
-    }
+    });
+
+
   };
 
 
@@ -277,7 +299,7 @@ export default function App() {
   };
   return (
     <div>
-
+      <Navbar />
       {isModalOpen && (
         <Modal isOpen={isModalOpen} size={"md"} hideCloseButton={true} onClose={closeModal}>
           <ModalContent>
@@ -352,6 +374,7 @@ export default function App() {
           </ModalContent>
         </Modal>
       )}
+
 
       {data.length > 0 && isLoading == false ?
         <CustomTable

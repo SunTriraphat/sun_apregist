@@ -157,7 +157,7 @@ export default function App() {
 
   return (
     <div className="">
-
+<Navbar />
       {data.length > 0 ?
         <CustomTable
           columns={headerColumns}
@@ -167,6 +167,8 @@ export default function App() {
           searchInColumn={true}
           defaultColumn={columns[6].key}
           topContent={"ตรวจสอบการแจ้งประกันภัย/ชำระเบี้ย"}
+          isImport={true}
+
         /> :
         <div className="flex h-screen justify-center items-center">
           <Spinner size="lg" label="Loading...." />
