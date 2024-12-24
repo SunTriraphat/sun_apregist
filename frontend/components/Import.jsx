@@ -52,7 +52,7 @@ export default function VinStock({ onValueSend }) {
         { key: "dealerId", label: "Dealer ID" },
         { key: "dealer_group", label: "Dealer Group" },
         { key: "model", label: "Model" },
-        { key: "vin_no", label: "Vin No. " },
+        { key: "vin_no", label: "Vin No." },
         // { key: "action", label: "Action" },
     ];
 
