@@ -14,8 +14,8 @@ function Navbar() {
   // const userData = useSelector((state) => state.user.user);
   const userData = JSON.parse(localStorage.getItem("user"));
   const router = useRouter();
+  let userPermission = useSelector((state) => state.user.userPermission[0]);
 
-  console.log(userData);
 
   const handleLogout = async () => {
     try {
@@ -113,14 +113,17 @@ function Navbar() {
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-            <li>
-              <Link
-                href="/manageUser"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                จัดการสิทธิ
-              </Link>
-            </li>
+            {/* {userPermission?.find((val) => val.menu == 'MNUS' && val.is_view == 1) && */}
+              <li>
+                <Link
+                  href="/manageUser"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                >
+                  จัดการสิทธิ
+                </Link>
+              </li>
+            {/* } */}
+
 
             <li className="flex items-center space-x-2">
               <div className="relative inline-block text-left" ref={dropdownRef}>

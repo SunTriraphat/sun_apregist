@@ -3,6 +3,7 @@ import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
   user: [],
+  userPermission: ''
 };
 
 const loginSlice = createSlice({
@@ -13,11 +14,15 @@ const loginSlice = createSlice({
       state.user = action.payload;
       console.log("Redux Login", current(state));
     },
+    addPermission: (state, action) => {
+      state.userPermission = action.payload;
+      console.log("permission", current(state));
+    },
     logoutUser(state) {
       state.user = null;
     },
   },
 });
 
-export const { addUser, logoutUser } = loginSlice.actions;
+export const { addUser, logoutUser,addPermission } = loginSlice.actions;
 export default loginSlice.reducer;

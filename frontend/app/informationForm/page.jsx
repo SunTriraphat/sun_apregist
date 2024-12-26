@@ -108,6 +108,24 @@ export default function App() {
     }
   };
 
+  const formatDate = (date) => {
+    if (!date) return null; // Return null if date is falsy
+
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, '0'); // Add leading zero for single digits
+    const month = (d.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero for single digits
+    const year = d.getFullYear() // Get last two digits of the year
+
+    return `${day}/${month}/${year}`;
+  };
+
+  const addOneYear = (date) => {
+    if (!date) return null;
+
+    const d = new Date(date);
+    d.setFullYear(d.getFullYear() + 1); // Add 1 year to the current date
+    return formatDate(d); // Format and return the new date
+  };
 
   const fetchData = async () => {
 
@@ -116,9 +134,52 @@ export default function App() {
       // const response = await axios.get(`${API_URL}getdata_main`);
 
       const response = await axios.post(`${API_URL}getall_data`);
-      console.log('response', response);
+      const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
 
-      setData(response.data);
+
+
+      if (response.data && responseInsurance.data) {
+        const sortedData = response.data.map(item => {
+          // Find the matching insurance object
+          const matchingInsurance = responseInsurance.data.find(
+            insurance => insurance.vin_no === item.Vin
+          );
+
+          return matchingInsurance
+            ? {
+              ...item,
+              policy_no: matchingInsurance.policy_no,
+              start_date: formatDate(matchingInsurance.start_date),
+              end_date: addOneYear(matchingInsurance.start_date),
+              payment_month: matchingInsurance.payment_month,
+              remark: matchingInsurance.remark,
+              DateTimeUtc: formatDate(item.DateTimeUtc),
+              brand: 'byd'
+            }
+            : {
+              ...item,
+              policy_no: null,
+              start_date: null,
+              end_date: null,
+              payment_month: null,
+              remark: null,
+              DateTimeUtc: formatDate(item.DateTimeUtc),
+              brand: 'byd'
+            };
+        }).sort((a, b) => {
+
+          // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
+          if (a.start_date === null) return 1; // Move nulls to the end
+          if (b.start_date === null) return -1; // Move nulls to the end
+          return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
+        });
+
+
+
+        setData(sortedData);
+        // console.log('data',data); // Updated data with the new property
+      }
+      // setData(response.data);
       setIsLoading(false)
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -157,7 +218,7 @@ export default function App() {
 
   return (
     <div className="">
-<Navbar />
+      <Navbar />
       {data.length > 0 ?
         <CustomTable
           columns={headerColumns}
@@ -169,7 +230,8 @@ export default function App() {
           topContent={"ตรวจสอบการแจ้งประกันภัย/ชำระเบี้ย"}
           isImport={true}
 
-        /> :
+        />
+        :
         <div className="flex h-screen justify-center items-center">
           <Spinner size="lg" label="Loading...." />
         </div>

@@ -21,7 +21,7 @@ import Navbar from "./Navbar";
 import * as XLSX from "xlsx";
 import ImportComponent from "./Import"
 
-export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key, topContent, isAdd, isImport}) {
+export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key, topContent, isAdd, isImport }) {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [pages, setPages] = useState("");
@@ -66,6 +66,7 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
   const paginatedData = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
+
     return filteredData.slice(start, end);
   }, [page, filteredData, rowsPerPage]);
 
@@ -164,49 +165,98 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
       [name]: value
     }));
   };
+  // const handleImport = async (e) => {
+  //   // console.log('excelData',excelData);
+  //   // // const form = excelData;
+  //   // const formData = new FormData(excelData);
+  //   console.log('excelData',excelData);
+
+  //   // Convert FormData to JSON
+  //   try {
+  //     const response = await fetch(`${API_URL}import_info_form`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(excelData),
+  //     }); 
+  //     console.log('response', response);
+
+
+  //     if (response.ok) {
+
+  //       Swal.fire({
+  //         title: 'Success',
+  //         // text: 'The form has been submitted successfully!',
+  //         icon: 'success',
+  //         confirmButtonText: 'OK',
+  //       });
+  //       // await setIsModalOpen(false);
+  //       window.location.reload();
+  //     } else {
+  //       Swal.fire({
+  //         title: 'Failed',
+  //         text: 'There was an issue with the submission. Please try again',
+  //         icon: 'error',
+  //         confirmButtonText: 'OK',
+  //       });
+  //       setIsModalOpen(false);
+
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     alert('An error occurred.');
+  //   } finally {
+  //     setLoadingModal(false)
+  //   }
+  // };
+
+
+
+  const CHUNK_SIZE = 500; // Adjust this value as needed
+
   const handleImport = async (e) => {
-    // console.log('excelData',excelData);
-    // // const form = excelData;
-    // const formData = new FormData(excelData);
-    console.log('excelData',excelData);
-    
-    // Convert FormData to JSON
+
+    const totalRecords = excelData.length;
+    setLoadingModal(true);
     try {
-      const response = await fetch(`${API_URL}import_info_form`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(excelData),
+      // Function to process data in chunks
+      const sendInChunks = async () => {
+        for (let i = 0; i < totalRecords; i += CHUNK_SIZE) {
+          const chunk = excelData.slice(i, i + CHUNK_SIZE);
+          const response = await fetch(`${API_URL}import_info_form`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(chunk),
+          });
+
+          if (!response.ok) {
+            throw new Error('Error sending chunk');
+          }
+        }
+      };
+
+      await sendInChunks();
+
+      Swal.fire({
+        title: 'Success',
+        icon: 'success',
+        confirmButtonText: 'OK',
       });
-      console.log('response', response);
-
-
-      if (response.ok) {
-        
-        Swal.fire({
-          title: 'Success',
-          // text: 'The form has been submitted successfully!',
-          icon: 'success',
-          confirmButtonText: 'OK',
-        });
-        // await setIsModalOpen(false);
-        window.location.reload();
-      } else {
-        Swal.fire({
-          title: 'Failed',
-          text: 'There was an issue with the submission. Please try again',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
-        setIsModalOpen(false);
-
-      }
+      window.location.reload();
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred.');
+      Swal.fire({
+        title: 'Failed',
+        text: 'There was an issue with the submission. Please try again',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+      setIsModalOpen(false);
     } finally {
-      setLoadingModal(false)
+      setLoadingModal(false);
     }
   };
 
@@ -324,8 +374,8 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
           <ModalContent>
             {(onClose) => (
               <>
-                <ImportComponent 
-                onValueSend={(val) => setExcelData(val)}
+                <ImportComponent
+                  onValueSend={(val) => setExcelData(val)}
                 />
                 {/* <ModalHeader className="flex flex-col gap-1">Import</ModalHeader>
                 <ModalBody>
@@ -370,9 +420,9 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
                       </>
 
                   }
-                </ModalFooter> 
-                
-              
+                </ModalFooter>
+
+
               </>
             )}
           </ModalContent>

@@ -31,6 +31,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     // Optionally, render a loading state until authentication is determined
     return <div></div>;
   }
+  
 
   return (
     <NextUIProvider navigate={router.push}>

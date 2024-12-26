@@ -88,7 +88,9 @@ export default function VinStock({ onValueSend }) {
             // const utf8Data = new TextDecoder('utf-8').decode(data);
     
             // const workbook = XLSX.read(utf8Data, { type: 'binary' });
+
             const workbook = XLSX.read(data, { type: 'binary' });
+
             const sheetName = workbook.SheetNames[0]; // Use the first sheet
             const sheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(sheet); // Convert sheet data to JSON
@@ -105,9 +107,9 @@ export default function VinStock({ onValueSend }) {
             console.log('headerColumns',headerColumns);
             console.log('dataWithKeys',dataWithKeys);
             
-            // setExcelUploadColumns(headerColumns);
-            // await setExcelData(dataWithKeys); // Display data in table
-            // onValueSend(dataWithKeys);
+            setExcelUploadColumns(headerColumns);
+            await setExcelData(dataWithKeys); // Display data in table
+            onValueSend(dataWithKeys);
         };
         reader.readAsArrayBuffer(file); // Reading the file as an array buffer to support UTF-8
         setFileName(file.name); // Store the uploaded file name

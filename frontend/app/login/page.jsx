@@ -5,8 +5,9 @@ import axios from "axios";
 
 import bcrypt from "bcryptjs";
 import { useDispatch } from "react-redux";
-import { addUser } from "../store/slice/loginSlice";
+import { addUser,addPermission } from "../store/slice/loginSlice";
 import Popup from "../../components/Popup";
+import CryptoJS from "crypto-js";
 
 import {
   Modal,
@@ -88,6 +89,8 @@ function Login() {
           email: values.email,
           password: values.password,
         });
+       
+       
         // Case login failed
         if (response.data.status === 401) {
           setPopupOpen(true);
@@ -97,7 +100,14 @@ function Login() {
         if (response.data.status === 200) {
           console.log("ล็อคอินสำเร็จ");
           localStorage.setItem('isAuth', true);
+
           dispatch(addUser([response.data.data]));
+          const permission = await axios.post(`${API_URL}get_user_permission`, {
+            id: response.data.data.id,
+          });
+          console.log('permission',permission);
+          dispatch(addPermission([permission.data]));
+        
           localStorage.setItem("user", JSON.stringify(response.data.data));
 
           router.push("/homepage");
