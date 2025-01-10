@@ -9,7 +9,7 @@ const columns = [
   { key: "model", label: "วันที่รับเอกสาร" },
   { key: "model", label: "วันที่เอกสารครบ" },
   { key: "model", label: "จดทะเบียน" },
-  { key: "document", label: "ส่งเอกสาร" },
+  { key: "send_document_date", label: "ส่งเอกสาร" },
   { key: "registration", label: "ทะเบียน" },
   { key: "registration_book", label: "เล่มทะเบียน" },
   { key: "remark_detail", label: "หมายเหตุ" },
@@ -17,6 +17,7 @@ const columns = [
   // { key: "billing", name: "Billing" },
   // { key: "status", name: "Status" },
   { key: "actions", name: "Actions" },
+  { key: "check_file", name: "File" },
 ];
 
 const statusOptions = [

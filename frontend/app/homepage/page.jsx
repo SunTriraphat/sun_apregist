@@ -110,7 +110,7 @@ function Homepage() {
   return (
     <>
       <Navbar />
-      <div className="w-full min-h-screen flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full  flex items-center justify-center p-4 sm:p-6">
         <div className="max-w-4xl w-full p-6 bg-white border border-gray-300 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -400,6 +400,7 @@ function Homepage() {
               </button>
             </div>
           </form>
+          {/* <p>homepage</p> */}
         </div>
       </div>
     </>

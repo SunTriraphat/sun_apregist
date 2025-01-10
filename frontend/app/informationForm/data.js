@@ -1,6 +1,6 @@
 import React from "react";
 const columns = [
-  { key: "DateTimeUtc", label: "วันที่นำเข้า" },
+  { key: "DateTimeUtc", label: "วันที่แจ้ง" },
   { key: "policy_no", label: "เลขกรมธรรม์" },
   { key: "start_date", label: "คุ้มครอง" },
   { key: "end_date", label: "สิ้นสุด" },

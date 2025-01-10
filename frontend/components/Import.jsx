@@ -85,11 +85,11 @@ export default function VinStock({ onValueSend }) {
             const data = event.target.result;
             // If you expect the file to be UTF-8 encoded text (not binary),
             // you can use TextDecoder to handle UTF-8 explicitly (for .txt or other text files)
-            // const utf8Data = new TextDecoder('utf-8').decode(data);
+            const utf8Data = new TextDecoder('utf-8').decode(data);
     
-            // const workbook = XLSX.read(utf8Data, { type: 'binary' });
+            const workbook = XLSX.read(utf8Data, { type: 'binary' });
 
-            const workbook = XLSX.read(data, { type: 'binary' });
+            // const workbook = XLSX.read(data, { type: 'binary' });
 
             const sheetName = workbook.SheetNames[0]; // Use the first sheet
             const sheet = workbook.Sheets[sheetName];

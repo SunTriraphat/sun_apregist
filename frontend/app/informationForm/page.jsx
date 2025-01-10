@@ -96,13 +96,13 @@ export default function App() {
   };
 
   const addOneYearAndFormat = (date) => {
-    console.log('date', !date);
+  
 
     if (!date) {
       return "";
     } else {
       const inputDate = new Date(date); // Parse the input date
-      console.log('inputDate', inputDate, date);
+
       // inputDate.setFullYear(inputDate.getFullYear() + 1); // Add one year
       // return formatDateToDMY(inputDate); // Format using the existing function
     }
@@ -136,8 +136,6 @@ export default function App() {
       const response = await axios.post(`${API_URL}getall_data`);
       const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
 
-
-
       if (response.data && responseInsurance.data) {
         const sortedData = response.data.map(item => {
           // Find the matching insurance object
@@ -149,8 +147,8 @@ export default function App() {
             ? {
               ...item,
               policy_no: matchingInsurance.policy_no,
-              start_date: formatDate(matchingInsurance.start_date),
-              end_date: addOneYear(matchingInsurance.start_date),
+              start_date: formatDate(item.EffectiveDateStart),
+              end_date: addOneYear(item.EffectiveDateStart),
               payment_month: matchingInsurance.payment_month,
               remark: matchingInsurance.remark,
               DateTimeUtc: formatDate(item.DateTimeUtc),
@@ -159,22 +157,21 @@ export default function App() {
             : {
               ...item,
               policy_no: null,
-              start_date: null,
-              end_date: null,
+              start_date: formatDate(item.EffectiveDateStart),
+              end_date: addOneYear(item.EffectiveDateStart),
               payment_month: null,
               remark: null,
               DateTimeUtc: formatDate(item.DateTimeUtc),
               brand: 'byd'
             };
-        }).sort((a, b) => {
+        })
+        // .sort((a, b) => {
 
-          // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
-          if (a.start_date === null) return 1; // Move nulls to the end
-          if (b.start_date === null) return -1; // Move nulls to the end
-          return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
-        });
-
-
+        //   // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
+        //   if (a.start_date === null) return 1; // Move nulls to the end
+        //   if (b.start_date === null) return -1; // Move nulls to the end
+        //   return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
+        // });
 
         setData(sortedData);
         // console.log('data',data); // Updated data with the new property

@@ -165,52 +165,6 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
       [name]: value
     }));
   };
-  // const handleImport = async (e) => {
-  //   // console.log('excelData',excelData);
-  //   // // const form = excelData;
-  //   // const formData = new FormData(excelData);
-  //   console.log('excelData',excelData);
-
-  //   // Convert FormData to JSON
-  //   try {
-  //     const response = await fetch(`${API_URL}import_info_form`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(excelData),
-  //     }); 
-  //     console.log('response', response);
-
-
-  //     if (response.ok) {
-
-  //       Swal.fire({
-  //         title: 'Success',
-  //         // text: 'The form has been submitted successfully!',
-  //         icon: 'success',
-  //         confirmButtonText: 'OK',
-  //       });
-  //       // await setIsModalOpen(false);
-  //       window.location.reload();
-  //     } else {
-  //       Swal.fire({
-  //         title: 'Failed',
-  //         text: 'There was an issue with the submission. Please try again',
-  //         icon: 'error',
-  //         confirmButtonText: 'OK',
-  //       });
-  //       setIsModalOpen(false);
-
-  //     }
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     alert('An error occurred.');
-  //   } finally {
-  //     setLoadingModal(false)
-  //   }
-  // };
-
 
 
   const CHUNK_SIZE = 500; // Adjust this value as needed
