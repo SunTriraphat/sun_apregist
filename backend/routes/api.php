@@ -3,6 +3,7 @@
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -91,5 +92,8 @@ Route::post('/download_file',function(Request $request){
     return app(DataController::class)->download_file($request);
 });
 
+Route::prefix('report')->group(function () {
+    Route::post('/query', [ReportController::class, 'query']);
+});
 
 
