@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import { SessionProvider } from "next-auth/react";
+import { registerLicense } from '@syncfusion/ej2-base';
+registerLicense('Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf0x1RHxbf1x1ZF1MZVxbRXRPIiBoS35Rc0ViWX5ccHFVR2RaWUB0');
 
 import "../styles/globals.css"; // Assuming you have global styles
 export interface ProvidersProps {
