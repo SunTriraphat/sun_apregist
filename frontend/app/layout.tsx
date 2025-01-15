@@ -1,11 +1,11 @@
-import { Metadata, Viewport } from "next";
+import { Metadata } from "next";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
 import ProviderWrapper from "./store/providerWrapper";
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
+import { prompt } from "@/config/fonts";
 
 import "./index.css";
 
@@ -20,26 +20,16 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-};
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <head />
+    <html suppressHydrationWarning lang="en" className={prompt.variable}>
       <body
-        className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
+        className={clsx("min-h-screen bg-background font-sans antialiased")}
+        style={{ fontFamily: "var(--font-sans)" }}
       >
         <ProviderWrapper>
           <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>

@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
@@ -5,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { logoutUser } from "../app/store/slice/loginSlice";
 import { useRouter } from "next/navigation";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -95,7 +97,7 @@ function Navbar() {
               >
                 แจ้งประกันภัย
               </Link>
-             
+
             </li>
             <li>
               <Link
@@ -104,7 +106,16 @@ function Navbar() {
               >
                 จดทะเบียน
               </Link>
-             
+
+            </li>
+            <li>
+              <Link
+                href="/dashBoard"
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+              >
+                แดชบอร์ด
+              </Link>
+
             </li>
             {/* <Dropdown>
               <DropdownTrigger className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" style={{ cursor: "pointer" }}>
@@ -124,14 +135,14 @@ function Navbar() {
               </DropdownMenu>
             </Dropdown> */}
             {/* {userPermission?.find((val) => val.menu == 'MNUS' && val.is_view == 1) && */}
-              <li>
-                <Link
-                  href="/manageUser"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  จัดการสิทธิ
-                </Link>
-              </li>
+            <li>
+              <Link
+                href="/manageUser"
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+              >
+                จัดการสิทธิ
+              </Link>
+            </li>
             {/* } */}
 
 

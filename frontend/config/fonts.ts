@@ -1,11 +1,7 @@
-import { Fira_Code as FontMono, Inter as FontSans } from "next/font/google";
+import { Prompt } from "@next/font/google";
 
-export const fontSans = FontSans({
+export const prompt = Prompt({
   subsets: ["latin"],
+  weight: ["400", "700"],
   variable: "--font-sans",
-});
-
-export const fontMono = FontMono({
-  subsets: ["latin"],
-  variable: "--font-mono",
 });
