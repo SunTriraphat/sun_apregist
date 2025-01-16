@@ -2,7 +2,7 @@
 import Navbar from "../../components/Navbar";
 import { useState } from "react";
 import CustomTableClassic from "../../components/CustomTableClassic";
-import ExcelJS from "exceljs";
+import * as XLSX from "xlsx";
 
 export default function Page() {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -51,7 +51,7 @@ export default function Page() {
             setData(result);
 
             if (type === "xlsx") {
-                await generateExcel(result);
+                generateExcel(result);
             }
         } catch (error) {
             console.error(error);
@@ -61,35 +61,23 @@ export default function Page() {
         }
     };
 
-    // ฟังก์ชันสร้างไฟล์ Excel
-    const generateExcel = async (reportData) => {
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet("Report");
-
-        // เพิ่มหัวตาราง
-        worksheet.columns = columns.map((col) => ({
-            header: col.label,
-            key: col.key,
-            width: 20,
-        }));
-
-        // เพิ่มข้อมูลในตาราง
-        reportData.forEach((item) => {
-            worksheet.addRow(item);
-        });
+    // ฟังก์ชันสร้างไฟล์ Excel โดยใช้ xlsx
+    const generateExcel = (reportData) => {
+        // แปลงข้อมูลเป็นรูปแบบที่ xlsx เข้าใจ
+        const worksheetData = reportData.map((item) =>
+            columns.reduce((obj, col) => {
+                obj[col.label] = item[col.key];
+                return obj;
+            }, {})
+        );
 
         // สร้างไฟล์ Excel
-        const buffer = await workbook.xlsx.writeBuffer();
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
 
         // ดาวน์โหลดไฟล์ Excel
-        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "report.xlsx";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        XLSX.writeFile(workbook, "report.xlsx");
     };
 
     return (

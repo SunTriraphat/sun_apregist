@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 import Navbar from "./Navbar";
 import * as XLSX from "xlsx";
 import ImportComponent from "./Import"
+import CustomModal from "./CustomModal";
 
 export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key, topContent, isAdd, isImport }) {
   const [page, setPage] = useState(1);
@@ -322,8 +323,32 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
           </ModalContent>
         </Modal>
       )}
-      {isImportModalOpen && (
-
+      {isImport === true && isImport != null && (
+        <CustomModal
+            isOpen={isImportModalOpen}
+            onClose={() => setIsImportModalOpen(false)}
+            size="lg"
+            color="gray-100"
+            footer={
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setIsImportModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded mr-2"
+                >
+                  Close
+                </button>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={handleImport}>
+                  Submit
+                </button>
+              </div>
+            }
+          >
+            <div className="overflow-y-auto overflow-x-auto max-h-[70vh]">
+              <ImportComponent onValueSend={(val) => setExcelData(val)} />
+            </div>
+        </CustomModal>
+      )}
+      {/* {isImportModalOpen && (
         <Modal isOpen={isImportModalOpen} size={"5xl"} hideCloseButton={true} onClose={closeImportModal}>
           <ModalContent>
             {(onClose) => (
@@ -331,32 +356,6 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
                 <ImportComponent
                   onValueSend={(val) => setExcelData(val)}
                 />
-                {/* <ModalHeader className="flex flex-col gap-1">Import</ModalHeader>
-                <ModalBody>
-
-                  <div className="mb-4">
-                    <Link onPress={downloadHeaderFile} aria-label="Download Header Excel">
-                      Download Header Excel File
-                    </Link>
-                  </div>
-                  <div className="mb-4">
-                    <Input
-                      aria-label="Upload Excel File"
-                      type="file"
-                      accept=".xlsx,.xls,.csv"
-                      onChange={handleFileUpload}
-                    />
-                    {fileName && <p>Uploaded file: {fileName}</p>}
-                  </div>
-                  <div className="">
-                    {excelData.length > 0 && (
-                      <CustomTable columns={excelUploadColumns} data={excelData} />
-                    )}
-                  </div>
-
-
-
-                </ModalBody> */}
                 <ModalFooter>
                   {
                     loadingModal ? (
@@ -381,7 +380,7 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
             )}
           </ModalContent>
         </Modal>
-      )}
+      )} */}
       <Table
         isCompact
         aria-label="Custom table with pagination"

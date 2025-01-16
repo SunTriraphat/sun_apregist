@@ -390,9 +390,6 @@ class DataController extends Controller
             ->getSchemaBuilder()
             ->getColumnListing('data1');
         
-        print_r($tableColumns);
-        exit;
-
         // Filter input data to include only valid columns
         $processedData = collect($request->all())->map(function ($item) use ($tableColumns) {
             // Filter keys to include only those in the table schema
