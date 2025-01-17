@@ -135,68 +135,114 @@ export default function App() {
     return formatDate(d); // Format and return the new date
   };
 
+  // const fetchData = async (page) => {
+  //   try {
+  //     // const response = await axios.get(`${API_URL}showData`);
+  //     // const response = await axios.get(`${API_URL}getdata_main`);
+  //     const response = await axios.post(`${API_URL}getall_data`);
+  //     const province = await axios.get(`https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json`);
+  //     const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
+
+
+  //     if (response.data && responseInsurance.data) {
+  //       const sortedData = response.data.map(item => {
+  //         // Find the matching insurance object
+  //         const matchingInsurance = responseInsurance.data.find(
+  //           insurance => insurance.vin_no === item.Vin
+  //         );
+
+
+  //         return matchingInsurance
+  //           ? {
+  //             ...item,
+  //             policy_no: matchingInsurance.policy_no,
+  //             start_date: formatDate(matchingInsurance.start_date),
+  //             end_date: addOneYear(matchingInsurance.start_date),
+  //             payment_month: matchingInsurance.payment_month,
+  //             remark: matchingInsurance.remark,
+  //             DateTimeUtc: formatDate(item.DateTimeUtc),
+  //             brand: 'byd',
+
+  //           }
+  //           : {
+  //             ...item,
+  //             policy_no: null,
+  //             start_date: null,
+  //             end_date: null,
+  //             payment_month: null,
+  //             remark: null,
+  //             DateTimeUtc: formatDate(item.DateTimeUtc),
+  //             brand: 'byd',
+
+  //           };
+  //       }).sort((a, b) => {
+
+  //         // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
+  //         if (a.start_date === null) return 1; // Move nulls to the end
+  //         if (b.start_date === null) return -1; // Move nulls to the end
+  //         return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
+  //       });
+
+
+  //       console.log('sortedData', sortedData);
+
+  //       setData(sortedData);
+  //       // console.log('data',data); // Updated data with the new property
+  //     }
+
+  //     setProvince(province.data)
+  //     // setData(response.data);
+  //     setIsLoading(false)
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
   const fetchData = async (page) => {
     try {
-      // const response = await axios.get(`${API_URL}showData`);
-      // const response = await axios.get(`${API_URL}getdata_main`);
-      const response = await axios.post(`${API_URL}getall_data`);
-      const province = await axios.get(`https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json`);
-      const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
-
-
+      const [response, province, responseInsurance] = await Promise.all([
+        axios.post(`${API_URL}getall_data`),
+        axios.get(`https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json`),
+        axios.get(`${API_URL}getall_insurance`)
+      ]);
+  
       if (response.data && responseInsurance.data) {
+        const insuranceLookup = responseInsurance.data.reduce((acc, insurance) => {
+          acc[insurance.vin_no] = insurance;
+          return acc;
+        }, {});
+  
         const sortedData = response.data.map(item => {
-          // Find the matching insurance object
-          const matchingInsurance = responseInsurance.data.find(
-            insurance => insurance.vin_no === item.Vin
-          );
-
-
-          return matchingInsurance
-            ? {
-              ...item,
-              policy_no: matchingInsurance.policy_no,
-              start_date: formatDate(matchingInsurance.start_date),
-              end_date: addOneYear(matchingInsurance.start_date),
-              payment_month: matchingInsurance.payment_month,
-              remark: matchingInsurance.remark,
-              DateTimeUtc: formatDate(item.DateTimeUtc),
-              brand: 'byd',
-
-            }
-            : {
-              ...item,
-              policy_no: null,
-              start_date: null,
-              end_date: null,
-              payment_month: null,
-              remark: null,
-              DateTimeUtc: formatDate(item.DateTimeUtc),
-              brand: 'byd',
-
-            };
+          const matchingInsurance = insuranceLookup[item.Vin];
+          return {
+            ...item,
+            policy_no: matchingInsurance ? matchingInsurance.policy_no : null,
+            start_date: matchingInsurance ? formatDate(matchingInsurance.start_date) : null,
+            end_date: matchingInsurance ? addOneYear(matchingInsurance.start_date) : null,
+            payment_month: matchingInsurance ? matchingInsurance.payment_month : null,
+            remark: matchingInsurance ? matchingInsurance.remark : null,
+            DateTimeUtc: formatDate(item.DateTimeUtc),
+            brand: 'byd'
+          };
         }).sort((a, b) => {
-
-          // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
-          if (a.start_date === null) return 1; // Move nulls to the end
-          if (b.start_date === null) return -1; // Move nulls to the end
-          return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
+          if (!a.start_date) return 1;
+          if (!b.start_date) return -1; 
+          return new Date(b.start_date) - new Date(a.start_date); 
         });
-
-
+  
         console.log('sortedData', sortedData);
-
+  
         setData(sortedData);
-        // console.log('data',data); // Updated data with the new property
       }
-
-      setProvince(province.data)
-      // setData(response.data);
-      setIsLoading(false)
+  
+      setProvince(province.data);
+  
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  
 
 
   const hasSearchFilter = Boolean(filterValue);
