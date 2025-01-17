@@ -127,57 +127,84 @@ export default function App() {
     return formatDate(d); // Format and return the new date
   };
 
+  // const fetchData = async () => {
+
+  //   try {
+
+  //     const response = await axios.post(`${API_URL}getall_data`);
+  //     const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
+
+  //     if (response.data && responseInsurance.data) {
+  //       const sortedData = response.data.map(item => {
+  //         // Find the matching insurance object
+  //         const matchingInsurance = responseInsurance.data.find(
+  //           insurance => insurance.vin_no === item.Vin
+  //         );
+
+  //         return matchingInsurance
+  //           ? {
+  //             ...item,
+  //             policy_no: matchingInsurance.policy_no,
+  //             start_date: formatDate(item.EffectiveDateStart),
+  //             end_date: addOneYear(item.EffectiveDateStart),
+  //             payment_month: matchingInsurance.payment_month,
+  //             remark: matchingInsurance.remark,
+  //             DateTimeUtc: formatDate(item.DateTimeUtc),
+  //             brand: 'byd'
+  //           }
+  //           : {
+  //             ...item,
+  //             policy_no: null,
+  //             start_date: formatDate(item.EffectiveDateStart),
+  //             end_date: addOneYear(item.EffectiveDateStart),
+  //             payment_month: null,
+  //             remark: null,
+  //             DateTimeUtc: formatDate(item.DateTimeUtc),
+  //             brand: 'byd'
+  //           };
+  //       })
+
+  //       setData(sortedData);
+  //     }
+  //     setIsLoading(false)
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  // New fetch data mapping using Lookup Table
   const fetchData = async () => {
-
     try {
-      // const response = await axios.get(`${API_URL}showData`);
-      // const response = await axios.get(`${API_URL}getdata_main`);
-
-      const response = await axios.post(`${API_URL}getall_data`);
-      const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
-
+      const [response, responseInsurance] = await Promise.all([
+        axios.post(`${API_URL}getall_data`),
+        axios.get(`${API_URL}getall_insurance`)
+      ]);
+  
       if (response.data && responseInsurance.data) {
+        // สร้าง Lookup Table insurance
+        const insuranceLookup = responseInsurance.data.reduce((acc, insurance) => {
+          acc[insurance.vin_no] = insurance;
+          return acc;
+        }, {});
+  
         const sortedData = response.data.map(item => {
-          // Find the matching insurance object
-          const matchingInsurance = responseInsurance.data.find(
-            insurance => insurance.vin_no === item.Vin
-          );
-
-          return matchingInsurance
-            ? {
-              ...item,
-              policy_no: matchingInsurance.policy_no,
-              start_date: formatDate(item.EffectiveDateStart),
-              end_date: addOneYear(item.EffectiveDateStart),
-              payment_month: matchingInsurance.payment_month,
-              remark: matchingInsurance.remark,
-              DateTimeUtc: formatDate(item.DateTimeUtc),
-              brand: 'byd'
-            }
-            : {
-              ...item,
-              policy_no: null,
-              start_date: formatDate(item.EffectiveDateStart),
-              end_date: addOneYear(item.EffectiveDateStart),
-              payment_month: null,
-              remark: null,
-              DateTimeUtc: formatDate(item.DateTimeUtc),
-              brand: 'byd'
-            };
-        })
-        // .sort((a, b) => {
-
-        //   // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
-        //   if (a.start_date === null) return 1; // Move nulls to the end
-        //   if (b.start_date === null) return -1; // Move nulls to the end
-        //   return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
-        // });
-
+          const matchingInsurance = insuranceLookup[item.Vin];
+  
+          return {
+            ...item,
+            policy_no: matchingInsurance ? matchingInsurance.policy_no : null,
+            start_date: formatDate(item.EffectiveDateStart),
+            end_date: addOneYear(item.EffectiveDateStart),
+            payment_month: matchingInsurance ? matchingInsurance.payment_month : null,
+            remark: matchingInsurance ? matchingInsurance.remark : null,
+            DateTimeUtc: formatDate(item.DateTimeUtc),
+            brand: 'byd'
+          };
+        });
+  
         setData(sortedData);
-        // console.log('data',data); // Updated data with the new property
       }
-      // setData(response.data);
-      setIsLoading(false)
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
