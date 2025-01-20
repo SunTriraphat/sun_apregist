@@ -16,7 +16,6 @@ const Page = () => {
     const firstDayOfMonth = startOfMonth(today);
     const [startDate, setStartDate] = useState(format(firstDayOfMonth, "yyyy-MM-dd"));
     const lastDayOfMonth = endOfMonth(today);
-
     const [endDate, setEndDate] = useState(format(lastDayOfMonth, "yyyy-MM-dd"));
 
     const handleSubmit = () => {
@@ -61,7 +60,7 @@ const Page = () => {
                                 value={startDate ? new Date(startDate) : null}
                                 onChange={(date) => {
                                     const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
-                                    setStartDate(formattedDate); // กำหนดเป็น string
+                                    setStartDate(formattedDate);
                                 }}
                                 block
                                 appearance="subtle"
@@ -73,7 +72,7 @@ const Page = () => {
                                 value={endDate ? new Date(endDate) : null}
                                 onChange={(date) => {
                                     const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : "";
-                                    setEndDate(formattedDate); // กำหนดเป็น string
+                                    setEndDate(formattedDate);
                                 }}
                                 block
                                 appearance="subtle"

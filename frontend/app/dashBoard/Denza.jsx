@@ -4,15 +4,24 @@ import axios from "axios";
 import BarChart from "../../components/charts/BarChart";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-function DenzaPage({ }) {
+function DenzaPage({ startDate, endDate }) {
     const [denza, setDenza] = useState([]);
     const [totals, setTotals] = useState(0);
     const [modelData, setModelData] = useState([]);
     const fetchData = async () => {
         try {
-            const response = await axios.get(`${API_URL}getdenza_summary`);
+            const params = {};
+            if (startDate) params.start_date = startDate;
+            if (endDate) params.end_date = endDate;
+
+            const response = await axios.get(`${API_URL}getdenza_summary`, {
+                params,
+            });
             setDenza(response.data);
-            const total = response.data.reduce((sum, currentObject) => sum + currentObject.count, 0);
+            const total = response.data.reduce(
+                (sum, currentObject) => sum + currentObject.count,
+                0
+            );
             setTotals((prev) => ({ ...prev, denza: total }));
         } catch (error) {
             console.error("Error fetching Denza data:", error);
@@ -21,7 +30,11 @@ function DenzaPage({ }) {
 
     const fetchModelData = async () => {
         try {
-            const response = await axios.get(`${API_URL}getbyd_model`);
+            const params = {};
+            if (startDate) params.start_date = startDate;
+            if (endDate) params.end_date = endDate;
+
+            const response = await axios.get(`${API_URL}getbyd_model`, { params });
             setModelData(response.data); // เก็บข้อมูลที่ได้จาก API
         } catch (error) {
             console.error("Error fetching BYD model data:", error);
@@ -35,52 +48,49 @@ function DenzaPage({ }) {
 
     const dataMockup = {
         atto3: [
-            { x: 'Week 1', y: 6.02 },
-            { x: 'Week 2', y: 3.19 },
-            { x: 'Week 3', y: 3.28 },
-            { x: 'Week 4', y: 4.56 },
+            { x: "Week 1", y: 6.02 },
+            { x: "Week 2", y: 3.19 },
+            { x: "Week 3", y: 3.28 },
+            { x: "Week 4", y: 4.56 },
         ],
         m6: [
-            { x: 'Week 1', y: 5.32 },
-            { x: 'Week 2', y: 4.21 },
-            { x: 'Week 3', y: 4.87 },
-            { x: 'Week 4', y: 5.16 },
+            { x: "Week 1", y: 5.32 },
+            { x: "Week 2", y: 4.21 },
+            { x: "Week 3", y: 4.87 },
+            { x: "Week 4", y: 5.16 },
         ],
         dolphin: [
-            { x: 'Week 1', y: 7.12 },
-            { x: 'Week 2', y: 6.39 },
-            { x: 'Week 3', y: 5.28 },
-            { x: 'Week 4', y: 4.89 },
+            { x: "Week 1", y: 7.12 },
+            { x: "Week 2", y: 6.39 },
+            { x: "Week 3", y: 5.28 },
+            { x: "Week 4", y: 4.89 },
         ],
         seal: [
-            { x: 'Week 1', y: 8.45 },
-            { x: 'Week 2', y: 7.63 },
-            { x: 'Week 3', y: 6.91 },
-            { x: 'Week 4', y: 5.73 },
+            { x: "Week 1", y: 8.45 },
+            { x: "Week 2", y: 7.63 },
+            { x: "Week 3", y: 6.91 },
+            { x: "Week 4", y: 5.73 },
         ],
         sealion6: [
-            { x: 'Week 1', y: 9.56 },
-            { x: 'Week 2', y: 8.24 },
-            { x: 'Week 3', y: 7.89 },
-            { x: 'Week 4', y: 6.47 },
+            { x: "Week 1", y: 9.56 },
+            { x: "Week 2", y: 8.24 },
+            { x: "Week 3", y: 7.89 },
+            { x: "Week 4", y: 6.47 },
         ],
         selion7: [
-            { x: 'Week 1', y: 10.14 },
-            { x: 'Week 2', y: 9.63 },
-            { x: 'Week 3', y: 8.91 },
-            { x: 'Week 4', y: 7.45 },
+            { x: "Week 1", y: 10.14 },
+            { x: "Week 2", y: 9.63 },
+            { x: "Week 3", y: 8.91 },
+            { x: "Week 4", y: 7.45 },
         ],
-
-
     };
     const transformedData = [
-        ...dataMockup.atto3.map((item) => ({ ...item, group: 'atto3' })),
-        ...dataMockup.m6.map((item) => ({ ...item, group: 'm6' })),
-        ...dataMockup.dolphin.map((item) => ({ ...item, group: 'dolphin' })),
-        ...dataMockup.seal.map((item) => ({ ...item, group: 'seal' })),
-        ...dataMockup.sealion6.map((item) => ({ ...item, group: 'sealion6' })),
-        ...dataMockup.selion7.map((item) => ({ ...item, group: 'selion7' })),
-
+        ...dataMockup.atto3.map((item) => ({ ...item, group: "atto3" })),
+        ...dataMockup.m6.map((item) => ({ ...item, group: "m6" })),
+        ...dataMockup.dolphin.map((item) => ({ ...item, group: "dolphin" })),
+        ...dataMockup.seal.map((item) => ({ ...item, group: "seal" })),
+        ...dataMockup.sealion6.map((item) => ({ ...item, group: "sealion6" })),
+        ...dataMockup.selion7.map((item) => ({ ...item, group: "selion7" })),
     ];
     const chunkData = (data, columns) => {
         const chunked = [];
@@ -114,34 +124,61 @@ function DenzaPage({ }) {
     return (
         <>
             <div className="grid grid-cols-2 gap-6">
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <PieChart dataSource={denza} title="สัดส่วนการแจ้งประกันภัย Denza" />
-                    <div className="grid grid-rows-2 gap-6">
-                        {chunkedDenza.map((row, rowIndex) => (
-                            <div key={rowIndex} className="grid grid-cols-3 gap-4 py-4 px-6">
-                                {row.map((item, index) => (
-                                    <div key={index} className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center">
-                                        <p className="text-center text-xs">{item.x}</p>
-                                        <p className="text-center text-gray-500">{new Intl.NumberFormat().format(item.count)}</p>
+                {denza === "" ? (
+                    <>
+                        <>
+                            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg flex justify-center items-center text-xl font-semibold">
+                                กรุณาเลือกช่วงเวลา
+                            </div>
+                        </>
+                    </>
+                ) : (
+                    <>
+                        {" "}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <PieChart
+                                dataSource={denza}
+                                title="สัดส่วนการแจ้งประกันภัย Denza"
+                            />
+                            <div className="grid grid-rows-2 gap-6">
+                                {chunkedDenza.map((row, rowIndex) => (
+                                    <div
+                                        key={rowIndex}
+                                        className="grid grid-cols-3 gap-4 py-4 px-6"
+                                    >
+                                        {row.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
+                                            >
+                                                <p className="text-center text-xs">{item.x}</p>
+                                                <p className="text-center text-gray-500">
+                                                    {new Intl.NumberFormat().format(item.count)}
+                                                </p>
+                                            </div>
+                                        ))}
                                     </div>
                                 ))}
-                            </div>
-                        ))}
-                        <div className="grid grid-cols-2 gap-4 py-4 px-6 bg-gray-100 rounded-lg mt-4 justify-center items-center">
-                            <div className="text-center font-semibold text-lg text-gray-700">
-                                <p>Total</p>
-                            </div>
-                            <div className="text-center text-gray-500 font-semibold text-lg">
-                                <p>{new Intl.NumberFormat().format(totals.denza)}</p>
+                                <div className="grid grid-cols-2 gap-4 py-4 px-6 bg-gray-100 rounded-lg mt-4 justify-center items-center">
+                                    <div className="text-center font-semibold text-lg text-gray-700">
+                                        <p>Total</p>
+                                    </div>
+                                    <div className="text-center text-gray-500 font-semibold text-lg">
+                                        <p>{new Intl.NumberFormat().format(totals.denza)}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </>
+                )}
+
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart dataSource={marketShare} title="Market Share" />
 
                     <PieChart dataSource={marketShare} title="Market Share" />
-                    <div className="font-semibold text-gray-800 text-lg mt-6">Top 3 Dealers</div>
+                    <div className="font-semibold text-gray-800 text-lg mt-6">
+                        Top 3 Dealers
+                    </div>
                     <div className="grid grid-cols-3 gap-2 py-2">
                         {top.map((tops, index) => (
                             <div
@@ -149,7 +186,9 @@ function DenzaPage({ }) {
                                 className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
                             >
                                 <p className="text-center text-base font-bold">{tops.dealer}</p>
-                                <p className="text-center text-gray-200 text-lg mt-2">{tops.cont}</p>
+                                <p className="text-center text-gray-200 text-lg mt-2">
+                                    {tops.cont}
+                                </p>
                             </div>
                         ))}
                     </div>
@@ -162,7 +201,6 @@ function DenzaPage({ }) {
 
                 {/* Bar Chart */}
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-
                     <BarChart dataSource={transformedData} title="Model Chart" />
                 </div>
             </div>

@@ -42,7 +42,7 @@ function BYDPage({ startDate, endDate }) {
     useEffect(() => {
         if (startDate || endDate) {
             fetchData(startDate, endDate);
-            fetchModelData(startDate, endDate)
+            fetchModelData(startDate, endDate);
         }
     }, [startDate, endDate]);
 
@@ -58,8 +58,6 @@ function BYDPage({ startDate, endDate }) {
             console.error("Error fetching BYD model data:", error);
         }
     };
-
-
 
     const handleDateRangeChange = (value) => {
         setDateRange(value);
@@ -156,7 +154,6 @@ function BYDPage({ startDate, endDate }) {
                         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg flex justify-center items-center text-xl font-semibold">
                             กรุณาเลือกช่วงเวลา
                         </div>
-
                     </>
                 ) : (
                     <>
@@ -193,7 +190,8 @@ function BYDPage({ startDate, endDate }) {
                                     </div>
                                 </div>
                             </div>
-                        </div></>
+                        </div>
+                    </>
                 )}
 
                 {/* Right column */}
@@ -227,17 +225,29 @@ function BYDPage({ startDate, endDate }) {
                     </div>
                 </div>
             </div>
+            {modelData == "" ? (
+                <>
+                    <div className="grid grid-cols-2 gap-6 pt-10 pb-10">
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <div className=" flex justify-center items-center text-xl font-semibold">  กรุณาเลือกช่วงเวลา
+                            </div>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className="grid grid-cols-2 gap-6 mt-10">
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <PieChart dataSource={modelData} title="Model" />
+                        </div>
 
-            <div className="grid grid-cols-2 gap-6 mt-10">
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <PieChart dataSource={modelData} title="Model" />
-                </div>
-
-                {/* Bar Chart */}
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <BarChart dataSource={transformedData} title="Model Chart" />
-                </div>
-            </div>
+                        {/* Bar Chart */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <BarChart dataSource={transformedData} title="Model Chart" />
+                        </div>
+                    </div>
+                </>
+            )}
         </>
     );
 }
