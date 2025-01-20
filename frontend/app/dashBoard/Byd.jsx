@@ -8,63 +8,58 @@ import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-function BYDPage() {
+function BYDPage({ startDate, endDate }) {
     const [dataSource, setDataSource] = useState([]);
     const [totals, setTotals] = useState(0);
     const [modelData, setModelData] = useState([]);
     const [dateRange, setDateRange] = useState([null, null]);
-    const router = useRouter();
-    // State for start and end dates
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    // const [startDate, setStartDate] = useState(null);
+    // const [endDate, setEndDate] = useState(null);
 
-    const fetchData = async (startDate, endDate) => {
+    console.log("startDatedd", startDate);
+    console.log("endddd", endDate);
+    const fetchData = async () => {
         try {
             const params = {};
             if (startDate) params.start_date = startDate;
             if (endDate) params.end_date = endDate;
 
-            // เรียก API พร้อมส่ง params
             const response = await axios.get(`${API_URL}getbyd_summary`, { params });
 
-            // การกรองข้อมูล
-            const filteredData = response.data.filter((item) => {
-                const itemDate = new Date(item.date);
-                return (
-                    (!startDate || itemDate >= new Date(startDate)) &&
-                    (!endDate || itemDate <= new Date(endDate))
-                );
-            });
+            console.log("API Response Data:", response.data);
 
-            setDataSource(filteredData);
+            // Assuming no date filtering needed
+            setDataSource(response.data);
 
-            const total = filteredData.reduce(
-                (sum, currentObject) => sum + currentObject.count,
-                0
-            );
+            // Calculate total
+            const total = response.data.reduce((sum, item) => sum + item.count, 0);
             setTotals((prev) => ({ ...prev, byd: total }));
-
         } catch (error) {
             console.error("Error fetching BYD data:", error);
         }
     };
 
-
-    console.log("startDate", startDate);
+    useEffect(() => {
+        if (startDate || endDate) {
+            fetchData(startDate, endDate);
+            fetchModelData(startDate, endDate)
+        }
+    }, [startDate, endDate]);
 
     const fetchModelData = async () => {
         try {
-            const response = await axios.get(`${API_URL}getbyd_model`);
+            const params = {};
+            if (startDate) params.start_date = startDate;
+            if (endDate) params.end_date = endDate;
+
+            const response = await axios.get(`${API_URL}getbyd_model`, { params });
             setModelData(response.data);
         } catch (error) {
             console.error("Error fetching BYD model data:", error);
         }
     };
 
-    useEffect(() => {
-        fetchData();
-        fetchModelData();
-    }, []);
+
 
     const handleDateRangeChange = (value) => {
         setDateRange(value);
@@ -81,7 +76,6 @@ function BYDPage() {
     };
 
     const chunkedData = chunkData(dataSource, 7);
-
 
     const marketShare = [
         { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52% " },
@@ -151,44 +145,56 @@ function BYDPage() {
         ...dataMockup.selion7.map((item) => ({ ...item, group: "selion7" })),
     ];
 
-    console.log("modelData", modelData);
+    // console.log("dataSource", dataSource);
 
     return (
         <>
             <div className="grid grid-cols-2 gap-6 bg-gray-50">
-
                 {/* Left column */}
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <PieChart
-                        dataSource={dataSource}
-                        title="สัดส่วนการแจ้งประกันภัย BYD"
-                    />
-                    <div className="grid grid-rows-2 gap-6">
-                        {chunkedData.map((row, rowIndex) => (
-                            <div key={rowIndex} className="grid grid-cols-7 gap-4 py-4 px-6">
-                                {row.map((item, index) => (
+                {dataSource == "" ? (
+                    <>
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg flex justify-center items-center text-xl font-semibold">
+                            กรุณาเลือกช่วงเวลา
+                        </div>
+
+                    </>
+                ) : (
+                    <>
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <PieChart
+                                dataSource={dataSource}
+                                title="สัดส่วนการแจ้งประกันภัย BYD"
+                            />
+                            <div className="grid grid-rows-2 gap-6">
+                                {chunkedData.map((row, rowIndex) => (
                                     <div
-                                        key={index}
-                                        className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
+                                        key={rowIndex}
+                                        className="grid grid-cols-7 gap-4 py-4 px-6"
                                     >
-                                        <p className="text-center text-xs">{item.x}</p>
-                                        <p className="text-center text-gray-500">
-                                            {new Intl.NumberFormat().format(item.count)}
-                                        </p>
+                                        {row.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
+                                            >
+                                                <p className="text-center text-xs">{item.x}</p>
+                                                <p className="text-center text-gray-500">
+                                                    {new Intl.NumberFormat().format(item.count)}
+                                                </p>
+                                            </div>
+                                        ))}
                                     </div>
                                 ))}
+                                <div className="grid grid-cols-2 gap-4 py-4 px-6 bg-gray-100 rounded-lg mt-4 justify-center items-center">
+                                    <div className="text-center font-semibold text-lg text-gray-700">
+                                        <p>Total</p>
+                                    </div>
+                                    <div className="text-center text-gray-500 font-semibold text-lg">
+                                        <p>{new Intl.NumberFormat().format(totals.byd)}</p>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
-                        <div className="grid grid-cols-2 gap-4 py-4 px-6 bg-gray-100 rounded-lg mt-4 justify-center items-center">
-                            <div className="text-center font-semibold text-lg text-gray-700">
-                                <p>Total</p>
-                            </div>
-                            <div className="text-center text-gray-500 font-semibold text-lg">
-                                <p>{new Intl.NumberFormat().format(totals.byd)}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        </div></>
+                )}
 
                 {/* Right column */}
                 <div className="p-6  bg-white border border-gray-200 rounded-lg shadow-lg">

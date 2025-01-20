@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar";
 import BYDPage from "./Byd";
 import DenzaPage from "./Denza";
 import NetInsurance from "./NetInsurance";
-import { format } from "date-fns";
+import { format, addDays, startOfMonth, endOfMonth } from "date-fns";
 import { DatePicker, InputGroup, SelectPicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import "./style.css";
@@ -12,9 +12,12 @@ import "./style.css";
 const Page = () => {
     const [totals, setTotals] = useState({ byd: 0, denza: 0 });
     const [selectedOption, setSelectedOption] = useState("BYD");
-    const today = format(new Date(), "yyyy-MM-dd")
-    const [startDate, setStartDate] = useState(today);
-    const [endDate, setEndDate] = useState();
+    const today = new Date();
+    const firstDayOfMonth = startOfMonth(today);
+    const [startDate, setStartDate] = useState(format(firstDayOfMonth, "yyyy-MM-dd"));
+    const lastDayOfMonth = endOfMonth(today);
+
+    const [endDate, setEndDate] = useState(format(lastDayOfMonth, "yyyy-MM-dd"));
 
     const handleSubmit = () => {
         console.log("Start Date:", startDate, "End Date:", endDate);
@@ -26,8 +29,8 @@ const Page = () => {
     ];
 
     useEffect(() => {
-        handleSubmit()
-    }, [today])
+        // handleSubmit()
+    }, [])
     return (
         <>
             <Navbar />
@@ -57,36 +60,39 @@ const Page = () => {
                                 format="yyyy-MM-dd"
                                 value={startDate ? new Date(startDate) : null}
                                 onChange={(date) => {
-                                    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-                                    setStartDate(formattedDate);
-                                    console.log("Start Date Updated:", formattedDate);
+                                    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+                                    setStartDate(formattedDate); // กำหนดเป็น string
                                 }}
                                 block
                                 appearance="subtle"
                                 style={{ width: 160 }}
                             />
 
-                            <InputGroup.Addon>ถึง</InputGroup.Addon>
                             <DatePicker
                                 format="yyyy-MM-dd"
                                 value={endDate ? new Date(endDate) : null}
                                 onChange={(date) => {
-                                    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
-                                    setEndDate(formattedDate);
-                                    console.log("End Date Updated:", formattedDate);
-                                    handleSubmit();
+                                    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : "";
+                                    setEndDate(formattedDate); // กำหนดเป็น string
                                 }}
                                 block
                                 appearance="subtle"
                                 style={{ width: 160 }}
                             />
+
                         </InputGroup>
+                        {/* <button
+                            onClick={handleSubmit}
+                            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                        >
+                            ส่งข้อมูล
+                        </button> */}
                     </div>
                 </div>
                 {selectedOption === "BYD" && (
                     <BYDPage startDate={startDate} endDate={endDate} setTotals={setTotals} />
                 )}
-                {selectedOption === "Denza" && <DenzaPage setTotals={setTotals} />}
+                {selectedOption === "Denza" && <DenzaPage startDate={startDate} endDate={endDate} setTotals={setTotals} />}
                 <NetInsurance />
             </div>
         </>
