@@ -1,4 +1,4 @@
-import { Prompt } from "@next/font/google";
+import { Prompt } from "next/font/google";
 
 export const prompt = Prompt({
   subsets: ["latin"],
