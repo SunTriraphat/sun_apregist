@@ -1,44 +1,61 @@
 import React, { useEffect, useState } from "react";
 import PieChart from "../../components/charts/PieChart";
-import {
-    ChartComponent,
-    SeriesCollectionDirective,
-    SeriesDirective,
-    Inject,
-    ColumnSeries,
-    Category,
-    DataLabel,
-} from "@syncfusion/ej2-react-charts";
 import BarChart from "../../components/charts/BarChart";
 import axios from "axios";
+import { MdNavigateNext } from "react-icons/md";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function BYDPage() {
     const [dataSource, setDataSource] = useState([]);
     const [totals, setTotals] = useState(0);
-    const [modelData, setModelData] = useState([]); // State สำหรับเก็บข้อมูลจาก getbyd_model
+    const [modelData, setModelData] = useState([]);
+    const [dateRange, setDateRange] = useState([null, null]);
+    const router = useRouter();
+    // State for start and end dates
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
-    // ฟังก์ชันสำหรับเรียก API และอัพเดตสถานะ
-    const fetchData = async () => {
+    const fetchData = async (startDate, endDate) => {
         try {
-            const response = await axios.get(`${API_URL}getbyd_summary`);
-            setDataSource(response.data);
-            const total = response.data.reduce(
+            const params = {};
+            if (startDate) params.start_date = startDate;
+            if (endDate) params.end_date = endDate;
+
+            // เรียก API พร้อมส่ง params
+            const response = await axios.get(`${API_URL}getbyd_summary`, { params });
+
+            // การกรองข้อมูล
+            const filteredData = response.data.filter((item) => {
+                const itemDate = new Date(item.date);
+                return (
+                    (!startDate || itemDate >= new Date(startDate)) &&
+                    (!endDate || itemDate <= new Date(endDate))
+                );
+            });
+
+            setDataSource(filteredData);
+
+            const total = filteredData.reduce(
                 (sum, currentObject) => sum + currentObject.count,
                 0
             );
             setTotals((prev) => ({ ...prev, byd: total }));
+
         } catch (error) {
             console.error("Error fetching BYD data:", error);
         }
     };
 
-    // ฟังก์ชันสำหรับดึงข้อมูลจาก getbyd_model API
+
+    console.log("startDate", startDate);
+
     const fetchModelData = async () => {
         try {
             const response = await axios.get(`${API_URL}getbyd_model`);
-            setModelData(response.data); // เก็บข้อมูลที่ได้จาก API
+            setModelData(response.data);
         } catch (error) {
             console.error("Error fetching BYD model data:", error);
         }
@@ -46,9 +63,15 @@ function BYDPage() {
 
     useEffect(() => {
         fetchData();
-        fetchModelData(); // เรียกใช้ฟังก์ชันเพื่อดึงข้อมูล model
+        fetchModelData();
     }, []);
 
+    const handleDateRangeChange = (value) => {
+        setDateRange(value);
+        fetchData(value[0], value[1]);
+    };
+
+    // Chunking function (you may want to modify it based on your data)
     const chunkData = (data, columns) => {
         const chunked = [];
         for (let i = 0; i < data.length; i += columns) {
@@ -58,8 +81,10 @@ function BYDPage() {
     };
 
     const chunkedData = chunkData(dataSource, 7);
+
+
     const marketShare = [
-        { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52%" },
+        { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52% " },
         { x: "Eastern", y: 13, text: "Eastern: 13%" },
         { x: "Northeastern", y: 10, text: "Northeastern: 10%" },
         { x: "Northern", y: 9, text: "Northern: 9%" },
@@ -67,15 +92,71 @@ function BYDPage() {
         { x: "Western & Northcentral", y: 10, text: "Western & Northcentral: 10%" },
     ];
 
-    const data = [
-        { x: "Q1", y: 30, color: "red" },
-        { x: "Q2", y: 50, color: "green" },
-        { x: "Q3", y: 70, color: "blue" },
-        { x: "Q4", y: 90, color: "purple" },
+    const top = [
+        { dealer: "Byd susco beyone", cont: 337 },
+        { dealer: "Byd Jinlong Motors", cont: 306 },
+        { dealer: "Byd Metromobile", cont: 236 },
     ];
+
+    const colors = [
+        "bg-gradient-to-r from-violet-500 to-violet-400",
+        "bg-gradient-to-r from-green-500 to-green-400",
+        "bg-gradient-to-r from-pink-500 to-pink-400",
+    ];
+
+    const dataMockup = {
+        atto3: [
+            { x: "Week 1", y: 6.02 },
+            { x: "Week 2", y: 3.19 },
+            { x: "Week 3", y: 3.28 },
+            { x: "Week 4", y: 4.56 },
+        ],
+        m6: [
+            { x: "Week 1", y: 5.32 },
+            { x: "Week 2", y: 4.21 },
+            { x: "Week 3", y: 4.87 },
+            { x: "Week 4", y: 5.16 },
+        ],
+        dolphin: [
+            { x: "Week 1", y: 7.12 },
+            { x: "Week 2", y: 6.39 },
+            { x: "Week 3", y: 5.28 },
+            { x: "Week 4", y: 4.89 },
+        ],
+        seal: [
+            { x: "Week 1", y: 8.45 },
+            { x: "Week 2", y: 7.63 },
+            { x: "Week 3", y: 6.91 },
+            { x: "Week 4", y: 5.73 },
+        ],
+        sealion6: [
+            { x: "Week 1", y: 9.56 },
+            { x: "Week 2", y: 8.24 },
+            { x: "Week 3", y: 7.89 },
+            { x: "Week 4", y: 6.47 },
+        ],
+        selion7: [
+            { x: "Week 1", y: 10.14 },
+            { x: "Week 2", y: 9.63 },
+            { x: "Week 3", y: 8.91 },
+            { x: "Week 4", y: 7.45 },
+        ],
+    };
+    const transformedData = [
+        ...dataMockup.atto3.map((item) => ({ ...item, group: "atto3" })),
+        ...dataMockup.m6.map((item) => ({ ...item, group: "m6" })),
+        ...dataMockup.dolphin.map((item) => ({ ...item, group: "dolphin" })),
+        ...dataMockup.seal.map((item) => ({ ...item, group: "seal" })),
+        ...dataMockup.sealion6.map((item) => ({ ...item, group: "sealion6" })),
+        ...dataMockup.selion7.map((item) => ({ ...item, group: "selion7" })),
+    ];
+
+    console.log("modelData", modelData);
+
     return (
         <>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-6 bg-gray-50">
+
                 {/* Left column */}
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart
@@ -110,12 +191,37 @@ function BYDPage() {
                 </div>
 
                 {/* Right column */}
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                <div className="p-6  bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart dataSource={marketShare} title="Market Share" />
+
+                    <PieChart dataSource={marketShare} title="Market Share" />
+                    <div className="flex space-x-5 py-2">
+                        <div className="font-semibold text-gray-500 text-lg flex items-center">
+                            Top 3 Dealers
+                        </div>
+                        <Link href="/topDealers" className="button-link">
+                            <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-28 duration-300 ease-in-out hover:bg-blue-800">
+                                Read more <MdNavigateNext />
+                            </div>
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 py-4">
+                        {top.map((tops, index) => (
+                            <div
+                                key={index}
+                                className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
+                            >
+                                <p className="text-center text-base font-bold">{tops.dealer}</p>
+                                <p className="text-center text-gray-200 text-lg mt-2">
+                                    {tops.cont}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Section to display the model data in a PieChart */}
             <div className="grid grid-cols-2 gap-6 mt-10">
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart dataSource={modelData} title="Model" />
@@ -123,8 +229,7 @@ function BYDPage() {
 
                 {/* Bar Chart */}
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-
-                    <BarChart dataSource={modelData} title="Model Chart" />
+                    <BarChart dataSource={transformedData} title="Model Chart" />
                 </div>
             </div>
         </>

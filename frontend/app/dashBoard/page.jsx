@@ -1,66 +1,93 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import BYDPage from "./Byd";
 import DenzaPage from "./Denza";
 import NetInsurance from "./NetInsurance";
-import { DateRangePicker, Select, SelectItem, Autocomplete, AutocompleteItem } from "@nextui-org/react";
-
+import { format } from "date-fns";
+import { DatePicker, InputGroup, SelectPicker } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
+import "./style.css";
 
 const Page = () => {
     const [totals, setTotals] = useState({ byd: 0, denza: 0 });
     const [selectedOption, setSelectedOption] = useState("BYD");
-    const [selectedCountry, setSelectedCountry] = useState("US");
+    const today = format(new Date(), "yyyy-MM-dd")
+    const [startDate, setStartDate] = useState(today);
+    const [endDate, setEndDate] = useState();
 
-    const onChange = (value) => {
-        setSelectedOption(value);
+    const handleSubmit = () => {
+        console.log("Start Date:", startDate, "End Date:", endDate);
     };
 
     const brand = [
-        { key: 'BYD', label: 'BYD' },
-        { key: 'Denza', label: 'Denza' }
-    ]
-
-
-    const region = [
-        { key: 'US', label: 'United States' },
-        { key: 'TH', label: 'Thailand' },
+        { value: "BYD", label: "BYD" },
+        { value: "Denza", label: "Denza" },
     ];
 
+    useEffect(() => {
+        handleSubmit()
+    }, [today])
     return (
         <>
             <Navbar />
             <div className="p-10 bg-gray-50">
-                <h1 className="text-3xl font-semibold text-gray-800 mb-6">แดชบอร์ด</h1>
-
-                {/* Dropdown for selecting data */}
-                <div className="flex gap-24 mb-6 justify-end">
-                    <div className="flex justify-end">
-                        <select
+                <h1 className="text-3xl text-gray-800 mb-6">Dashboard</h1>
+                <div className="flex items-center gap-16 mb-6">
+                    <div className="flex-1 max-w-xs">
+                        <label htmlFor="brand" className="text-gray-700 mb-2 block">
+                            เลือกแบรนด์
+                        </label>
+                        <SelectPicker
+                            id="brand"
+                            data={brand}
                             value={selectedOption}
-                            onChange={(e) => onChange(e.target.value)}
-                            className="bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 p-2 text-lg text-gray-700 shadow-sm hover:border-blue-500 transition duration-200 ease-in-out w-40"
-                        >
-                            <option value="BYD">BYD</option>
-                            <option value="Denza">Denza</option>
-                        </select>
+                            onChange={setSelectedOption}
+                            block
+                            placeholder="เลือกแบรนด์"
+                            style={{ width: "100%" }}
+                        />
                     </div>
+                    <div className="flex-1 max-w-xs">
+                        <label htmlFor="dateRange" className="text-gray-700 mb-2 block">
+                            เลือกช่วงเวลา
+                        </label>
+                        <InputGroup className="flex items-center">
+                            <DatePicker
+                                format="yyyy-MM-dd"
+                                value={startDate ? new Date(startDate) : null}
+                                onChange={(date) => {
+                                    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+                                    setStartDate(formattedDate);
+                                    console.log("Start Date Updated:", formattedDate);
+                                }}
+                                block
+                                appearance="subtle"
+                                style={{ width: 160 }}
+                            />
 
-                    <div>
-                        {/* <DateRangePicker className="max-w-xs" label="Stay duration" /> */}
+                            <InputGroup.Addon>ถึง</InputGroup.Addon>
+                            <DatePicker
+                                format="yyyy-MM-dd"
+                                value={endDate ? new Date(endDate) : null}
+                                onChange={(date) => {
+                                    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
+                                    setEndDate(formattedDate);
+                                    console.log("End Date Updated:", formattedDate);
+                                    handleSubmit();
+                                }}
+                                block
+                                appearance="subtle"
+                                style={{ width: 160 }}
+                            />
+                        </InputGroup>
                     </div>
                 </div>
-
-
-
-
-
-                {/* Display data based on selection */}
-                {selectedOption === "BYD" && <BYDPage setTotals={setTotals} />}
+                {selectedOption === "BYD" && (
+                    <BYDPage startDate={startDate} endDate={endDate} setTotals={setTotals} />
+                )}
                 {selectedOption === "Denza" && <DenzaPage setTotals={setTotals} />}
-                <div className="mb-5" >
-                    <NetInsurance />
-                </div>
+                <NetInsurance />
             </div>
         </>
     );
