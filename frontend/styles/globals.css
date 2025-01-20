@@ -10,3 +10,17 @@
  body {
      font-family: var(--font-sans);
  }
+
+ a,
+ a:hover {
+     color: #1675e0;
+     text-decoration: none !important;
+ }
+
+ .button-link {
+     text-decoration: none;
+ }
+
+ .button-link:hover {
+     text-decoration: none;
+ }

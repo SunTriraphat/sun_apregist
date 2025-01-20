@@ -1,0 +1,16 @@
+/* เพิ่ม CSS สำหรับ SelectPicker */
+.rs-picker-has-value .rs-btn .rs-picker-toggle-value,
+.rs-picker-has-value .rs-picker-toggle .rs-picker-toggle-value {
+    color: #343434 !important;
+    /* เปลี่ยนสีข้อความ */
+}
+
+.rs-picker-select-menu-item.rs-picker-select-menu-item-active :focus {
+    color: #343434 !important;
+    /* เปลี่ยนสี placeholder */
+}
+
+.custom-select .rs-picker-menu {
+    color: #000000 !important;
+    /* เปลี่ยนสีข้อความในเมนู dropdown */
+}

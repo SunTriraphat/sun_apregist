@@ -9,6 +9,7 @@ import {
     AccumulationTooltip,
     AccumulationDataLabel,
 } from "@syncfusion/ej2-react-charts";
+import { DatePicker, InputGroup, SelectPicker } from 'rsuite';
 
 const SAMPLE_CSS = `
     .control-fluid {
@@ -41,6 +42,7 @@ const PieChart = ({ dataSource, title }) => {
 
     return (
         <div className="control-pane">
+
             <style>{SAMPLE_CSS}</style>
             <div className="control-section row">
                 <AccumulationChartComponent
