@@ -4,20 +4,21 @@ import BarChart from "../../components/charts/BarChart";
 import axios from "axios";
 import { MdNavigateNext } from "react-icons/md";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-
+import { SelectPicker } from "rsuite";
+import { FaCalendarAlt } from 'react-icons/fa';
+import { format } from "date-fns";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-function BYDPage({ startDate, endDate }) {
+function BYDPage({ startDate, endDate, selectedMonths }) {
     const [dataSource, setDataSource] = useState([]);
     const [totals, setTotals] = useState(0);
     const [modelData, setModelData] = useState([]);
     const [dateRange, setDateRange] = useState([null, null]);
-    // const [startDate, setStartDate] = useState(null);
-    // const [endDate, setEndDate] = useState(null);
+    const [dataLine, setDataLine] = useState();
+    const today = new Date();
+    const [selectedMonth, setSelectedMonth] = useState();
+    const [month, setMonth] = useState(format(today, "yyyy-MM-dd"));
 
-    console.log("startDatedd", startDate);
-    console.log("endddd", endDate);
     const fetchData = async () => {
         try {
             const params = {};
@@ -25,26 +26,14 @@ function BYDPage({ startDate, endDate }) {
             if (endDate) params.end_date = endDate;
 
             const response = await axios.get(`${API_URL}getbyd_summary`, { params });
-
-            console.log("API Response Data:", response.data);
-
-            // Assuming no date filtering needed
             setDataSource(response.data);
 
-            // Calculate total
             const total = response.data.reduce((sum, item) => sum + item.count, 0);
             setTotals((prev) => ({ ...prev, byd: total }));
         } catch (error) {
             console.error("Error fetching BYD data:", error);
         }
     };
-
-    useEffect(() => {
-        if (startDate || endDate) {
-            fetchData(startDate, endDate);
-            fetchModelData(startDate, endDate);
-        }
-    }, [startDate, endDate]);
 
     const fetchModelData = async () => {
         try {
@@ -59,12 +48,39 @@ function BYDPage({ startDate, endDate }) {
         }
     };
 
+    const fetchModelLine = async () => {
+        try {
+            const params = {};
+            if (startDate) params.date_select = startDate;
+            if (month) params.date_select = month;
+            const response = await axios.get(`${API_URL}getbyd_model_line`, { params });
+            setDataLine(response.data);
+        } catch (error) {
+            console.error("Error fetching BYD model data:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (startDate || endDate) {
+            fetchData(startDate, endDate);
+            fetchModelData(startDate, endDate);
+            fetchModelLine(startDate);
+        }
+    }, [startDate, endDate]);
+
+    useEffect(() => {
+        if (selectedMonth) {
+            const formattedMonth = format(new Date(selectedMonth), 'yyyy-MM-dd');
+            setMonth(formattedMonth);
+            fetchModelLine()
+        }
+    }, [selectedMonth]);
+
     const handleDateRangeChange = (value) => {
         setDateRange(value);
         fetchData(value[0], value[1]);
     };
 
-    // Chunking function (you may want to modify it based on your data)
     const chunkData = (data, columns) => {
         const chunked = [];
         for (let i = 0; i < data.length; i += columns) {
@@ -76,7 +92,7 @@ function BYDPage({ startDate, endDate }) {
     const chunkedData = chunkData(dataSource, 7);
 
     const marketShare = [
-        { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52% " },
+        { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52%" },
         { x: "Eastern", y: 13, text: "Eastern: 13%" },
         { x: "Northeastern", y: 10, text: "Northeastern: 10%" },
         { x: "Northern", y: 9, text: "Northern: 9%" },
@@ -90,93 +106,68 @@ function BYDPage({ startDate, endDate }) {
         { dealer: "Byd Metromobile", cont: 236 },
     ];
 
+    const transformData = (dataLine) => {
+        if (!dataLine || !Array.isArray(dataLine)) {
+            return {}; // Return empty object if dataLine is undefined or not an array
+        }
+
+        const transformedData = {};
+
+        dataLine.forEach((item) => {
+            const key = item.Model.toLowerCase().replace(/_/g, "");
+            const dataArry = JSON.parse(item.data).sort((a, b) => {
+                const weekA = parseInt(a.x.replace("week ", ""));
+                const weekB = parseInt(b.x.replace("week ", ""));
+                return weekA - weekB;
+            });
+            transformedData[key] = dataArry;
+        });
+
+        return transformedData;
+    };
+
+    const ModelLine = transformData(dataLine);
+    console.log(ModelLine);
+
+    const transformedData = [
+        ...(ModelLine.atto3 || []).map((item) => ({ ...item, group: "atto3" })),
+        ...(ModelLine.m6 || []).map((item) => ({ ...item, group: "m6" })),
+        ...(ModelLine.dolphin || []).map((item) => ({ ...item, group: "dolphin" })),
+        ...(ModelLine.seal || []).map((item) => ({ ...item, group: "seal" })),
+        ...(ModelLine.sealion6 || []).map((item) => ({ ...item, group: "sealion6" })),
+        ...(ModelLine.sealion7 || []).map((item) => ({ ...item, group: "sealion7" })),
+    ];
+
     const colors = [
         "bg-gradient-to-r from-violet-500 to-violet-400",
         "bg-gradient-to-r from-green-500 to-green-400",
         "bg-gradient-to-r from-pink-500 to-pink-400",
     ];
-
-    const dataMockup = {
-        atto3: [
-            { x: "Week 1", y: 6.02 },
-            { x: "Week 2", y: 3.19 },
-            { x: "Week 3", y: 3.28 },
-            { x: "Week 4", y: 4.56 },
-        ],
-        m6: [
-            { x: "Week 1", y: 5.32 },
-            { x: "Week 2", y: 4.21 },
-            { x: "Week 3", y: 4.87 },
-            { x: "Week 4", y: 5.16 },
-        ],
-        dolphin: [
-            { x: "Week 1", y: 7.12 },
-            { x: "Week 2", y: 6.39 },
-            { x: "Week 3", y: 5.28 },
-            { x: "Week 4", y: 4.89 },
-        ],
-        seal: [
-            { x: "Week 1", y: 8.45 },
-            { x: "Week 2", y: 7.63 },
-            { x: "Week 3", y: 6.91 },
-            { x: "Week 4", y: 5.73 },
-        ],
-        sealion6: [
-            { x: "Week 1", y: 9.56 },
-            { x: "Week 2", y: 8.24 },
-            { x: "Week 3", y: 7.89 },
-            { x: "Week 4", y: 6.47 },
-        ],
-        selion7: [
-            { x: "Week 1", y: 10.14 },
-            { x: "Week 2", y: 9.63 },
-            { x: "Week 3", y: 8.91 },
-            { x: "Week 4", y: 7.45 },
-        ],
-    };
-    const transformedData = [
-        ...dataMockup.atto3.map((item) => ({ ...item, group: "atto3" })),
-        ...dataMockup.m6.map((item) => ({ ...item, group: "m6" })),
-        ...dataMockup.dolphin.map((item) => ({ ...item, group: "dolphin" })),
-        ...dataMockup.seal.map((item) => ({ ...item, group: "seal" })),
-        ...dataMockup.sealion6.map((item) => ({ ...item, group: "sealion6" })),
-        ...dataMockup.selion7.map((item) => ({ ...item, group: "selion7" })),
-    ];
-
-    // console.log("dataSource", dataSource);
-
     return (
         <>
             <div className="grid grid-cols-2 gap-6 bg-gray-50">
                 {/* Left column */}
-                {dataSource == "" ? (
-                    <>
-                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg flex justify-center items-center text-xl font-semibold">
-                            กรุณาเลือกช่วงเวลา
+                {dataSource.length === 0 ? (
+                    <div className="p-8 bg-white border border-gray-200 rounded-lg shadow-lg flex flex-col justify-center items-center space-y-6 relative">
+                        <p className="text-gray-700 text-lg font-semibold text-center">กรุณาเลือกช่วงเวลา</p>
+                        <div className="flex flex-row justify-center items-end space-x-4 relative">
+                            <div className="circle animate-circle delay-0" />
+                            <div className="circle animate-circle delay-1" />
+                            <div className="circle animate-circle delay-2" />
+                            <div className="circle animate-circle delay-3" />
                         </div>
-                    </>
+                    </div>
                 ) : (
                     <>
                         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                            <PieChart
-                                dataSource={dataSource}
-                                title="สัดส่วนการแจ้งประกันภัย BYD"
-                            />
+                            <PieChart dataSource={dataSource} title="สัดส่วนการแจ้งประกันภัย BYD" />
                             <div className="grid grid-rows-2 gap-6">
                                 {chunkedData.map((row, rowIndex) => (
-                                    <div
-                                        key={rowIndex}
-                                        className="grid grid-cols-7 gap-4 py-4 px-6"
-                                    >
+                                    <div key={rowIndex} className="grid grid-cols-7 gap-4 py-4 px-6">
                                         {row.map((item, index) => (
-                                            <div
-                                                key={index}
-                                                className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
-                                            >
+                                            <div key={index} className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center">
                                                 <p className="text-center text-xs">{item.x}</p>
-                                                <p className="text-center text-gray-500">
-                                                    {new Intl.NumberFormat().format(item.count)}
-                                                </p>
+                                                <p className="text-center text-gray-500">{new Intl.NumberFormat().format(item.count)}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -195,13 +186,12 @@ function BYDPage({ startDate, endDate }) {
                 )}
 
                 {/* Right column */}
-                <div className="p-6  bg-white border border-gray-200 rounded-lg shadow-lg">
+                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart dataSource={marketShare} title="Market Share" />
 
-                    <PieChart dataSource={marketShare} title="Market Share" />
                     <div className="flex space-x-5 py-2">
                         <div className="font-semibold text-gray-500 text-lg flex items-center">
-                            Top 3 Dealers
+                            Top Dealers
                         </div>
                         <Link href="/topDealers" className="button-link">
                             <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-28 duration-300 ease-in-out hover:bg-blue-800">
@@ -217,36 +207,50 @@ function BYDPage({ startDate, endDate }) {
                                 className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
                             >
                                 <p className="text-center text-base font-bold">{tops.dealer}</p>
-                                <p className="text-center text-gray-200 text-lg mt-2">
-                                    {tops.cont}
-                                </p>
+                                <p className="text-center text-gray-200 text-lg mt-2">{tops.cont}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-            {modelData == "" ? (
-                <>
-                    <div className="grid grid-cols-2 gap-6 pt-10 pb-10">
-                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                            <div className=" flex justify-center items-center text-xl font-semibold">  กรุณาเลือกช่วงเวลา
-                            </div>
+
+            {/* Model Data */}
+            {modelData.length === 0 ? (
+                <div className="grid grid-cols-2 gap-6 mt-10">
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                        <div className="flex justify-center items-center text-xl font-semibold">
+                            กรุณาเลือกช่วงเวลา
                         </div>
                     </div>
-                </>
+                </div>
             ) : (
-                <>
-                    <div className="grid grid-cols-2 gap-6 mt-10">
-                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                            <PieChart dataSource={modelData} title="Model" />
-                        </div>
+                <div className="grid grid-cols-2 gap-6 mt-10">
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                        <PieChart dataSource={modelData} title="Model" />
+                    </div>
 
-                        {/* Bar Chart */}
-                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                    {/* Bar Chart */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                        <label htmlFor="dateLine" className="text-gray-700 mb-2 block">เลือกช่วงเวลา</label>
+                        <SelectPicker
+                            id="dateLine"
+                            data={selectedMonths.map((month) => ({
+                                label: month,
+                                value: month,
+                            }))}
+                            value={selectedMonth}
+                            onChange={setSelectedMonth}
+                            placeholder="เลือกช่วงเวลา"
+                            style={{ width: "50%" }}
+                        />
+
+
+
+                        <div className="mt-8">
                             <BarChart dataSource={transformedData} title="Model Chart" />
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </>
     );

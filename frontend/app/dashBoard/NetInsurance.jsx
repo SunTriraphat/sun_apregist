@@ -59,13 +59,13 @@ function NetInsurance() {
     if (loading) {
         return <div className="text-center">Loading...</div>;
     }
-    console.log("insuranceData", insuranceData);
-    console.log("totals", totals);
-    console.log("compulosry", compulosry);
+    // console.log("insuranceData", insuranceData);
+    // console.log("totals", totals);
+    // console.log("compulosry", compulosry);
 
     return (
         <>
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg mt-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8">
                     {/* First Section */}
                     <div className="bg-[#fef2f2] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
