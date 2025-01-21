@@ -35,7 +35,7 @@ function DenzaPage({ startDate, endDate }) {
             if (endDate) params.end_date = endDate;
 
             const response = await axios.get(`${API_URL}getbyd_model`, { params });
-            setModelData(response.data); // เก็บข้อมูลที่ได้จาก API
+            setModelData(response.data);
         } catch (error) {
             console.error("Error fetching BYD model data:", error);
         }
@@ -84,6 +84,7 @@ function DenzaPage({ startDate, endDate }) {
             { x: "Week 4", y: 7.45 },
         ],
     };
+
     const transformedData = [
         ...dataMockup.atto3.map((item) => ({ ...item, group: "atto3" })),
         ...dataMockup.m6.map((item) => ({ ...item, group: "m6" })),
@@ -92,6 +93,13 @@ function DenzaPage({ startDate, endDate }) {
         ...dataMockup.sealion6.map((item) => ({ ...item, group: "sealion6" })),
         ...dataMockup.selion7.map((item) => ({ ...item, group: "selion7" })),
     ];
+
+    const data = [
+        { x: 'Week 1', y: 28 },
+        { x: 'Week 2', y: 19 },
+        { x: 'Week 3', y: 56 },
+    ];
+
     const chunkData = (data, columns) => {
         const chunked = [];
         for (let i = 0; i < data.length; i += columns) {
@@ -134,7 +142,6 @@ function DenzaPage({ startDate, endDate }) {
                     </>
                 ) : (
                     <>
-                        {" "}
                         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                             <PieChart
                                 dataSource={denza}
@@ -177,7 +184,7 @@ function DenzaPage({ startDate, endDate }) {
 
                     <PieChart dataSource={marketShare} title="Market Share" />
                     <div className="font-semibold text-gray-800 text-lg mt-6">
-                        Top 3 Dealers
+                        Top Dealers
                     </div>
                     <div className="grid grid-cols-3 gap-2 py-2">
                         {top.map((tops, index) => (
