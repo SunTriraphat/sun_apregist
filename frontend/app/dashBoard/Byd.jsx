@@ -52,7 +52,7 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
         try {
             const params = {};
             if (startDate) params.date_select = startDate;
-            if (month) params.date_select = month;
+            // if (month) params.date_select = month;
             const response = await axios.get(`${API_URL}getbyd_model_line`, { params });
             setDataLine(response.data);
         } catch (error) {
