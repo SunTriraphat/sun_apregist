@@ -48,62 +48,21 @@ const BarChart = ({ dataSource, title }) => {
                         services={[LineSeries, Legend, Tooltip, DataLabel, Category]}
                     />
                     <SeriesCollectionDirective>
-                        <SeriesDirective
-                            dataSource={dataSource.filter((item) => item.group === "atto3")}
-                            xName="x"
-                            yName="y"
-                            width={2}
-                            name="atto3"
-                            type="Line"
-
-                        ></SeriesDirective>
-                        <SeriesDirective
-                            dataSource={dataSource.filter((item) => item.group === "dolphin")}
-                            xName="x"
-                            yName="y"
-                            width={2}
-                            name="dolphin"
-                            type="Line"
-
-                        ></SeriesDirective>
-                        <SeriesDirective
-                            dataSource={dataSource.filter(item => item.group === 'm6')}
-                            xName="x"
-                            yName="y"
-                            width={2}
-                            name="m6"
-                            type="Line"
-
-                        ></SeriesDirective>
-                        <SeriesDirective
-                            dataSource={dataSource.filter(item => item.group === 'seal')}
-                            xName="x"
-                            yName="y"
-                            width={2}
-                            name="seal"
-                            type="Line"
-
-                        ></SeriesDirective>
-                        <SeriesDirective
-                            dataSource={dataSource.filter(item => item.group === 'sealion6')}
-                            xName="x"
-                            yName="y"
-                            width={2}
-                            name="sealion6"
-                            type="Line"
-
-                        ></SeriesDirective>
-                        <SeriesDirective
-                            dataSource={dataSource.filter(item => item.group === 'sealion7')}
-                            xName="x"
-                            yName="y"
-                            width={2}
-                            name="selion7"
-                            type="Line"
-                        ></SeriesDirective>
+                        {["atto3", "dolphin", "m6", "seal", "sealion6", "sealion7"].map((group) => (
+                            <SeriesDirective
+                                key={group}
+                                dataSource={dataSource.filter((item) => item.group === group)}
+                                xName="x"
+                                yName="y"
+                                width={2}
+                                name={group}
+                                type="Line"
+                                marker={{ visible: true, width: 7, height: 7, shape: 'Circle', isFilled: true }}
+                            />
+                        ))}
                     </SeriesCollectionDirective>
                 </ChartComponent>
-                ;
+
             </div>
         </div>
     );

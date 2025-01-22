@@ -12,45 +12,27 @@ import "rsuite/dist/rsuite.min.css";
 import "./style.css";
 import { th } from "date-fns/locale";
 const Page = () => {
-
     const [totals, setTotals] = useState({ byd: 0, denza: 0 });
     const [selectedOption, setSelectedOption] = useState("BYD");
     const today = new Date();
     const firstDayOfMonth = startOfMonth(today);
     const [startDate, setStartDate] = useState(format(firstDayOfMonth, "yyyy-MM-dd"));
-    const [selectedMonths, setSelectedMonths] = useState([]);
     const lastDayOfMonth = endOfMonth(today);
     const [endDate, setEndDate] = useState(format(today, "yyyy-MM-dd"));
 
-    const getMonthsInRange = (start, end) => {
-        const months = [];
-        let current = startOfMonth(new Date(start));
-        const last = startOfMonth(addDays(new Date(end), 1));
 
-        while (current < last) {
-            months.push(format(current, "MMMM yyyy", { locale: th }));
-            current = addDays(endOfMonth(current), 1);
-        }
-        return months;
+    const handleSubmit = () => {
+        // console.log("Start Date:", startDate, "End Date:", endDate);
     };
-
-    useEffect(() => {
-        if (startDate && endDate) {
-            const months = getMonthsInRange(startDate, endDate);
-            setSelectedMonths(months);
-        }
-    }, [startDate, endDate]);
-
-    // const handleSubmit = () => {
-    //    console.log("Start Date:", startDate, "End Date:", endDate);
-    // };
 
     const brand = [
         { value: "BYD", label: "BYD" },
         { value: "Denza", label: "Denza" },
     ];
 
-
+    useEffect(() => {
+        // handleSubmit()
+    }, []);
 
     return (
         <>
@@ -107,7 +89,7 @@ const Page = () => {
                 {selectedOption === "BYD" && (
                     <BYDPage startDate={startDate}
                         endDate={endDate}
-                        selectedMonths={selectedMonths}
+                        // selectedMonths={selectedMonths}
                         setTotals={setTotals} />
                 )}
                 {selectedOption === "Denza" && <DenzaPage startDate={startDate} endDate={endDate} setTotals={setTotals} />}
