@@ -5,20 +5,20 @@ import axios from "axios";
 import { MdNavigateNext } from "react-icons/md";
 import Link from "next/link";
 import { SelectPicker } from "rsuite";
-import { FaCalendarAlt } from 'react-icons/fa';
+import { FaCalendarAlt } from "react-icons/fa";
 import { format } from "date-fns";
+import { th } from "date-fns/locale";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-function BYDPage({ startDate, endDate, selectedMonths }) {
+function BYDPage({ startDate, endDate }) {
     const [dataSource, setDataSource] = useState([]);
     const [totals, setTotals] = useState(0);
     const [modelData, setModelData] = useState([]);
-    const [dateRange, setDateRange] = useState([null, null]);
     const [dataLine, setDataLine] = useState();
-    const today = new Date();
     const [selectedMonth, setSelectedMonth] = useState();
-    const [month, setMonth] = useState(format(today, "yyyy-MM-dd"));
+    const [month, setMonth] = useState();
 
+    // Fetch Data
     const fetchData = async () => {
         try {
             const params = {};
@@ -35,6 +35,7 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
         }
     };
 
+    // Fetch Model Data
     const fetchModelData = async () => {
         try {
             const params = {};
@@ -48,38 +49,64 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
         }
     };
 
-    const fetchModelLine = async () => {
+    // Fetch Model Line Data
+    const fetchModelLineMonth = async (month) => {
         try {
             const params = {};
-            if (startDate) params.date_select = startDate;
             if (month) params.date_select = month;
-            const response = await axios.get(`${API_URL}getbyd_model_line`, { params });
+            const response = await axios.get(`${API_URL}getbyd_model_line`, {
+                params,
+            });
             setDataLine(response.data);
         } catch (error) {
-            console.error("Error fetching BYD model data:", error);
+            console.error("Error fetching BYD model line data:", error);
         }
     };
 
+    // Handle Date Range Changes
     useEffect(() => {
         if (startDate || endDate) {
-            fetchData(startDate, endDate);
-            fetchModelData(startDate, endDate);
-            fetchModelLine(startDate);
+            fetchData();
+            fetchModelData();
         }
     }, [startDate, endDate]);
 
-    useEffect(() => {
-        if (selectedMonth) {
-            const formattedMonth = format(new Date(selectedMonth), 'yyyy-MM-dd');
-            setMonth(formattedMonth);
-            fetchModelLine()
-        }
-    }, [selectedMonth]);
+    // Generate Month Data
+    const transformMont = (startDate, endDate) => {
+        const months = [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-    const handleDateRangeChange = (value) => {
-        setDateRange(value);
-        fetchData(value[0], value[1]);
+        let current = new Date(start);
+        while (current <= end) {
+            const formattedLabel = format(current, "MMMM yyyy", { locale: th });
+            const formattedValue = format(current, "yyyy-MM");
+            months.push({
+                label: formattedLabel,
+                value: formattedValue,
+            });
+            current.setMonth(current.getMonth() + 1);
+        }
+        return months;
     };
+
+    // Set Month Options on Date Change
+    useEffect(() => {
+        if (startDate && endDate) {
+            const months = transformMont(startDate, endDate);
+            setSelectedMonth(months); // Update available months for selection
+            if (months.length > 0) {
+                setMonth(months[0].value); // Set the first month as the default selected
+            }
+        }
+    }, [startDate, endDate]);
+
+    // Fetch Model Line for the selected Month
+    useEffect(() => {
+        if (month) {
+            fetchModelLineMonth(month);
+        }
+    }, [month]);
 
     const chunkData = (data, columns) => {
         const chunked = [];
@@ -108,11 +135,10 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
 
     const transformData = (dataLine) => {
         if (!dataLine || !Array.isArray(dataLine)) {
-            return {}; // Return empty object if dataLine is undefined or not an array
+            return {}; // Return an empty object if no valid data is found
         }
 
         const transformedData = {};
-
         dataLine.forEach((item) => {
             const key = item.Model.toLowerCase().replace(/_/g, "");
             const dataArry = JSON.parse(item.data).sort((a, b) => {
@@ -125,49 +151,72 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
 
         return transformedData;
     };
-
+    const colors = [
+        "bg-gradient-to-r from-blue-500 to-blue-400",
+        "bg-gradient-to-r from-green-500 to-green-400",
+        "bg-gradient-to-r from-purple-500 to-purple-400",
+    ];
     const ModelLine = transformData(dataLine);
-    console.log(ModelLine);
 
     const transformedData = [
         ...(ModelLine.atto3 || []).map((item) => ({ ...item, group: "atto3" })),
         ...(ModelLine.m6 || []).map((item) => ({ ...item, group: "m6" })),
         ...(ModelLine.dolphin || []).map((item) => ({ ...item, group: "dolphin" })),
         ...(ModelLine.seal || []).map((item) => ({ ...item, group: "seal" })),
-        ...(ModelLine.sealion6 || []).map((item) => ({ ...item, group: "sealion6" })),
-        ...(ModelLine.sealion7 || []).map((item) => ({ ...item, group: "sealion7" })),
+        ...(ModelLine.sealion6 || []).map((item) => ({
+            ...item,
+            group: "sealion6",
+        })),
+        ...(ModelLine.sealion7 || []).map((item) => ({
+            ...item,
+            group: "sealion7",
+        })),
     ];
 
-    const colors = [
-        "bg-gradient-to-r from-violet-500 to-violet-400",
-        "bg-gradient-to-r from-green-500 to-green-400",
-        "bg-gradient-to-r from-pink-500 to-pink-400",
-    ];
+    console.log("transformedDatadddd", transformedData);
     return (
         <>
             <div className="grid grid-cols-2 gap-6 bg-gray-50">
                 {/* Left column */}
                 {dataSource.length === 0 ? (
-                    <div className="p-8 bg-white border border-gray-200 rounded-lg shadow-lg flex flex-col justify-center items-center space-y-6 relative">
-                        <p className="text-gray-700 text-lg font-semibold text-center">กรุณาเลือกช่วงเวลา</p>
-                        <div className="flex flex-row justify-center items-end space-x-4 relative">
-                            <div className="circle animate-circle delay-0" />
-                            <div className="circle animate-circle delay-1" />
-                            <div className="circle animate-circle delay-2" />
-                            <div className="circle animate-circle delay-3" />
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg  ">
+                        <div className="flex flex-col justify-center items-center h-full space-y-2">
+                            <p className="text-gray-700 text-lg font-semibold text-center">
+                                ไม่มีข้อมูลที่แสดงในขณะนี้
+                            </p>
+                            <p className="text-gray-500 text-sm text-center">
+                                โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+                            </p>
+                            <div className="flex flex-row justify-center items-end space-x-4 relative z-10 ">
+                                <div className="circle animate-circle delay-0" />
+                                <div className="circle animate-circle delay-1" />
+                                <div className="circle animate-circle delay-2" />
+                                <div className="circle animate-circle delay-3" />
+                            </div>
                         </div>
                     </div>
                 ) : (
                     <>
                         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                            <PieChart dataSource={dataSource} title="สัดส่วนการแจ้งประกันภัย BYD" />
+                            <PieChart
+                                dataSource={dataSource}
+                                title="สัดส่วนการแจ้งประกันภัย BYD"
+                            />
                             <div className="grid grid-rows-2 gap-6">
                                 {chunkedData.map((row, rowIndex) => (
-                                    <div key={rowIndex} className="grid grid-cols-7 gap-4 py-4 px-6">
+                                    <div
+                                        key={rowIndex}
+                                        className="grid grid-cols-7 gap-4 py-4 px-6"
+                                    >
                                         {row.map((item, index) => (
-                                            <div key={index} className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center">
+                                            <div
+                                                key={index}
+                                                className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
+                                            >
                                                 <p className="text-center text-xs">{item.x}</p>
-                                                <p className="text-center text-gray-500">{new Intl.NumberFormat().format(item.count)}</p>
+                                                <p className="text-center text-gray-500">
+                                                    {new Intl.NumberFormat().format(item.count)}
+                                                </p>
                                             </div>
                                         ))}
                                     </div>
@@ -207,7 +256,9 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
                                 className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
                             >
                                 <p className="text-center text-base font-bold">{tops.dealer}</p>
-                                <p className="text-center text-gray-200 text-lg mt-2">{tops.cont}</p>
+                                <p className="text-center text-gray-200 text-lg mt-2">
+                                    {tops.cont}
+                                </p>
                             </div>
                         ))}
                     </div>
@@ -215,43 +266,77 @@ function BYDPage({ startDate, endDate, selectedMonths }) {
             </div>
 
             {/* Model Data */}
-            {modelData.length === 0 ? (
-                <div className="grid grid-cols-2 gap-6 mt-10">
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                        <div className="flex justify-center items-center text-xl font-semibold">
-                            กรุณาเลือกช่วงเวลา
+
+            <div className="grid grid-cols-2 gap-6 mt-10 h-full ">
+                {modelData.length === 0 ? (
+                    <>
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg h-96 flex flex-row justify-center items-center z-10">
+                            <div className="grid grid-flow-row justify-center items-center   space-y-2">
+                                <p className="text-gray-700 text-lg font-semibold text-center">
+                                    ไม่มีข้อมูลที่แสดงในขณะนี้
+                                </p>
+                                <p className="text-gray-500 text-sm text-center">
+                                    โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+                                </p>
+                                <div className="flex flex-row justify-center items-end space-x-4 relative  ">
+                                    <div className="circle animate-circle delay-0" />
+                                    <div className="circle animate-circle delay-1" />
+                                    <div className="circle animate-circle delay-2" />
+                                    <div className="circle animate-circle delay-3" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            ) : (
-                <div className="grid grid-cols-2 gap-6 mt-10">
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                        <PieChart dataSource={modelData} title="Model" />
-                    </div>
-
-                    {/* Bar Chart */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                        <label htmlFor="dateLine" className="text-gray-700 mb-2 block">เลือกช่วงเวลา</label>
-                        <SelectPicker
-                            id="dateLine"
-                            data={selectedMonths.map((month) => ({
-                                label: month,
-                                value: month,
-                            }))}
-                            value={selectedMonth}
-                            onChange={setSelectedMonth}
-                            placeholder="เลือกช่วงเวลา"
-                            style={{ width: "50%" }}
-                        />
-
-
-
-                        <div className="mt-8">
-                            <BarChart dataSource={transformedData} title="Model Chart" />
+                    </>
+                ) : (
+                    <>
+                        {" "}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <PieChart dataSource={modelData} title="Model" />
                         </div>
-                    </div>
+                    </>
+                )}
+
+                {/* Bar Chart */}
+                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                    <label htmlFor="dateLine" className="text-gray-700 mb-2 block">
+                        เลือกช่วงเวลา
+                    </label>
+                    <SelectPicker
+                        id="dateLine"
+                        data={selectedMonth}
+                        value={month}
+                        onChange={(value) => {
+                            setMonth(value);
+                        }}
+                        placeholder="เลือกช่วงเวลา"
+                        style={{ width: "50%" }}
+                    />
+                    {transformedData.length === 0 ? (
+                        <>
+                            <div className="flex flex-col justify-center items-center h-full space-y-2 z-10">
+                                <p className="text-gray-700 text-lg font-semibold text-center">
+                                    ไม่มีข้อมูลที่แสดงในขณะนี้
+                                </p>
+                                <p className="text-gray-500 text-sm text-center">
+                                    โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+                                </p>
+                                <div className="flex flex-row justify-center items-end space-x-4 relative z-10 ">
+                                    <div className="circle animate-circle delay-0" />
+                                    <div className="circle animate-circle delay-1" />
+                                    <div className="circle animate-circle delay-2" />
+                                    <div className="circle animate-circle delay-3" />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="mt-8">
+                                <BarChart dataSource={transformedData} title="Model Chart" />
+                            </div>
+                        </>
+                    )}
                 </div>
-            )}
+            </div>
         </>
     );
 }

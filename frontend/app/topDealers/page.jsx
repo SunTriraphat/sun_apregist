@@ -1,6 +1,8 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 import { AiOutlineCrown } from "react-icons/ai";
+import Link from "next/link";
+import { MdNavigateBefore } from "react-icons/md";
 function TopDealers() {
     const dealers = [
         {
@@ -39,9 +41,21 @@ function TopDealers() {
         <>
             <Navbar />
             <div className="p-10 bg-gray-50 h-screen   ">
-                <h1 className="text-3xl text-gray-800 mb-2  font-bold text-start">
-                    Top Dealers
-                </h1>
+                <div></div>
+                <div className="flex gap-5">
+
+                    {/* <Link href="/dashBoard" className="button-link">
+                        <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-20 duration-300 ease-in-out hover:bg-blue-800">
+                            <MdNavigateBefore />   Back
+                        </div>
+                    </Link> */}
+                    <h1 className="text-3xl text-gray-800 mb-2  font-bold text-start">
+                        Top Dealers
+                    </h1>
+                </div>
+
+
+
                 {/* <div className="w-full grid grid-cols-[2fr_2fr] gap-6  "> */}
                 <div className="w-full grid   gap-6  ">
                     <div className="flex flex-col">
