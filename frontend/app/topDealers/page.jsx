@@ -1,8 +1,9 @@
 import React from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 import { AiOutlineCrown } from "react-icons/ai";
 import Link from "next/link";
 import { MdNavigateBefore } from "react-icons/md";
+import MenuDash from '../../components/menuDash/MenuDash'
 function TopDealers() {
     const dealers = [
         {
@@ -40,9 +41,10 @@ function TopDealers() {
     return (
         <>
             <Navbar />
-            <div className="p-10 bg-gray-50 h-screen   ">
-                <div></div>
-                <div className="flex gap-5">
+
+            <div className="p-10 bg-gray-50 h-screen  ">
+                <div> <MenuDash /></div>
+                <div className="flex gap-5  ">
 
                     {/* <Link href="/dashBoard" className="button-link">
                         <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-20 duration-300 ease-in-out hover:bg-blue-800">
