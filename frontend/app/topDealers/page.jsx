@@ -36,7 +36,7 @@ function TopDealers() {
                             key={region}
                             title={region}
                             dealers={dealers}
-                            gradient={`bg-gradient-to-r from-${getGradient(region)}`}
+                            gradient={`bg-gradient-to-r from-violet-500 to-violet-400`}
                         />
                     ))}
                 </div>
@@ -45,20 +45,5 @@ function TopDealers() {
     );
 }
 
-// Helper function to set gradient colors based on the region
-const getGradient = (region) => {
-    const gradients = {
-        Northern: "violet-500 to-violet-400",
-        "BKK & Greater Bangkok": "violet-500 to-violet-400",
-        Northeastern: "violet-500 to-violet-400",
-        Eastern: "violet-500 to-violet-400",
-        Southern: "violet-500 to-violet-400",
-        Western: "violet-500 to-violet-400",
-        Central: "violet-500 to-violet-400",
-        Blank: "violet-500 to-violet-400",
-        Unknown: "violet-500 to-violet-400",
-    };
-    return gradients[region] || ""; // Default gradient
-};
 
 export default TopDealers;
