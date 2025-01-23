@@ -31,7 +31,6 @@ function NetInsurance({ startDate, endDate }) {
     }, []);
 
 
-
     if (loading) {
         return <div className="text-center">Loading...</div>;
     }
@@ -65,7 +64,6 @@ function NetInsurance({ startDate, endDate }) {
                                 ))}
                             </div>
                         </div>
-
 
                         <div className="bg-[#fffbeb] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
                             <p className="font-bold text-2xl text-center mb-4 ">Compulosry</p>

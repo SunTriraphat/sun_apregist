@@ -132,11 +132,23 @@ function DenzaPage({ startDate, endDate }) {
     return (
         <>
             <div className="grid grid-cols-2 gap-6">
-                {denza === "" ? (
+                {denza.length === 0 ? (
                     <>
                         <>
                             <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg flex justify-center items-center text-xl font-semibold">
-                                กรุณาเลือกช่วงเวลา
+                                <div className="grid grid-flow-row justify-center items-center   space-y-2"> <p className="text-gray-700 text-lg font-semibold text-center">
+                                    ไม่มีข้อมูลที่แสดงในขณะนี้
+                                </p>
+                                    <p className="text-gray-500 text-sm text-center">
+                                        โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+                                    </p>
+                                    <div className="flex flex-row justify-center items-end space-x-4 relative ">
+                                        <div className="circle animate-circle delay-0" />
+                                        <div className="circle animate-circle delay-1" />
+                                        <div className="circle animate-circle delay-2" />
+                                        <div className="circle animate-circle delay-3" />
+                                    </div>
+                                </div>
                             </div>
                         </>
                     </>

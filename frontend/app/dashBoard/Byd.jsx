@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { th } from "date-fns/locale";
 import NetInsurance from '../dashBoard/NetInsurance'
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+import Looding from "../../components/looding/Looding";
 function BYDPage({ startDate, endDate }) {
     const [dataSource, setDataSource] = useState([]);
     const [totals, setTotals] = useState(0);
@@ -98,14 +98,13 @@ function BYDPage({ startDate, endDate }) {
     useEffect(() => {
         if (startDate && endDate) {
             const months = transformMont(startDate, endDate);
-            setSelectedMonth(months); // Update available months for selection
+            setSelectedMonth(months);
             if (months.length > 0) {
-                setMonth(months[0].value); // Set the first month as the default selected
+                setMonth(months[0].value);
             }
         }
     }, [startDate, endDate]);
 
-    // Fetch Model Line for the selected Month
     useEffect(() => {
         if (month) {
             fetchModelLineMonth(month);
@@ -139,7 +138,7 @@ function BYDPage({ startDate, endDate }) {
 
     const transformData = (dataLine) => {
         if (!dataLine || !Array.isArray(dataLine)) {
-            return {}; // Return an empty object if no valid data is found
+            return {};
         }
 
         const transformedData = {};
@@ -340,7 +339,7 @@ function BYDPage({ startDate, endDate }) {
                     )}
                 </div>
             </div>
-
+            {/* <NetInsurance  /> */}
         </>
     );
 }

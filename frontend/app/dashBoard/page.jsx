@@ -9,7 +9,6 @@ import { DatePicker, InputGroup, SelectPicker } from "rsuite";
 import isAfter from "date-fns/isAfter";
 import "rsuite/dist/rsuite.min.css";
 import "./style.css";
-import { th } from "date-fns/locale";
 import MenuDash from "../../components/menuDash/MenuDash";
 const Page = () => {
     const [totals, setTotals] = useState({ byd: 0, denza: 0 });
@@ -19,30 +18,18 @@ const Page = () => {
     const [startDate, setStartDate] = useState(
         format(firstDayOfMonth, "yyyy-MM-dd")
     );
-    const lastDayOfMonth = endOfMonth(today);
+
     const [endDate, setEndDate] = useState(format(today, "yyyy-MM-dd"));
-
-    const handleSubmit = () => {
-        // console.log("Start Date:", startDate, "End Date:", endDate);
-    };
-
-    console.log(selectedOption, "selectedOption");
 
     const brand = [
         { value: "BYD", label: "BYD" },
         { value: "Denza", label: "Denza" },
     ];
-
-    useEffect(() => {
-        // handleSubmit()
-    }, []);
-
     return (
         <>
             <Navbar />
             <div className="p-10 bg-gray-50">
                 <div>
-                    {" "}
                     <MenuDash />
                 </div>
 
