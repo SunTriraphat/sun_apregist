@@ -18,7 +18,8 @@ function BYDPage({ startDate, endDate }) {
     const [dataLine, setDataLine] = useState();
     const [selectedMonth, setSelectedMonth] = useState();
     const [month, setMonth] = useState();
-    const [premiumNet, setPremiumNet] = useState();
+    const [market, setMarket] = useState([]);
+    const [top, setTop] = useState([]);
 
     // Fetch Data
     const fetchData = async () => {
@@ -67,11 +68,27 @@ function BYDPage({ startDate, endDate }) {
         }
     };
 
+    const fetchMarketShare = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("start_date", startDate);
+            formData.append("end_date", endDate);
+
+            const response = await axios.post(`${API_URL}get_market_share`, formData);
+            
+            setMarket(response.data.marketShare);
+            setTop(response.data.top);
+        } catch (error) {
+            console.error("Error fetching BYD market share data:", error);
+        }
+    };
+
     // Handle Date Range Changes
     useEffect(() => {
         if (startDate || endDate) {
             fetchData();
             fetchModelData();
+            fetchMarketShare();
         }
     }, [startDate, endDate]);
 
@@ -121,22 +138,7 @@ function BYDPage({ startDate, endDate }) {
     };
 
     const chunkedData = chunkData(dataSource, 7);
-
-    const marketShare = [
-        { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52%" },
-        { x: "Eastern", y: 13, text: "Eastern: 13%" },
-        { x: "Northeastern", y: 10, text: "Northeastern: 10%" },
-        { x: "Northern", y: 9, text: "Northern: 9%" },
-        { x: "Southern", y: 6, text: "Southern: 6%" },
-        { x: "Western & Northcentral", y: 10, text: "Western & Northcentral: 10%" },
-    ];
-
-    const top = [
-        { dealer: "Byd susco beyone", cont: 337 },
-        { dealer: "Byd Jinlong Motors", cont: 306 },
-        { dealer: "Byd Metromobile", cont: 236 },
-    ];
-
+    
     const transformData = (dataLine) => {
         if (!dataLine || !Array.isArray(dataLine)) {
             return {}; // Return an empty object if no valid data is found
@@ -239,8 +241,19 @@ function BYDPage({ startDate, endDate }) {
 
                 {/* Right column */}
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <PieChart dataSource={marketShare} title="Market Share" />
-
+                    {
+                        market.length === 0 ? (
+                            <div className="flex flex-col justify-center items-center h-auto space-y-2">
+                                <p className="text-red-700 text-lg font-semibold text-center">
+                                    ไม่มีข้อมูลที่แสดงในขณะนี้
+                                </p>
+                            </div>
+                        ) : (
+                            <>
+                                <PieChart dataSource={market} title="Market Share" />
+                            </>
+                        )
+                    }
                     <div className="flex space-x-5 py-2">
                         <div className="font-semibold text-gray-500 text-lg flex items-center">
                             Top Dealers
