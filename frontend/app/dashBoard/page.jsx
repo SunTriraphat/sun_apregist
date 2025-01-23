@@ -1,29 +1,32 @@
-
 "use client";
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 import BYDPage from "./Byd";
 import DenzaPage from "./Denza";
 import NetInsurance from "./NetInsurance";
 import { format, addDays, startOfMonth, endOfMonth } from "date-fns";
 import { DatePicker, InputGroup, SelectPicker } from "rsuite";
-import isAfter from 'date-fns/isAfter';
+import isAfter from "date-fns/isAfter";
 import "rsuite/dist/rsuite.min.css";
 import "./style.css";
 import { th } from "date-fns/locale";
+import MenuDash from "../../components/menuDash/MenuDash";
 const Page = () => {
     const [totals, setTotals] = useState({ byd: 0, denza: 0 });
     const [selectedOption, setSelectedOption] = useState("BYD");
     const today = new Date();
     const firstDayOfMonth = startOfMonth(today);
-    const [startDate, setStartDate] = useState(format(firstDayOfMonth, "yyyy-MM-dd"));
+    const [startDate, setStartDate] = useState(
+        format(firstDayOfMonth, "yyyy-MM-dd")
+    );
     const lastDayOfMonth = endOfMonth(today);
     const [endDate, setEndDate] = useState(format(today, "yyyy-MM-dd"));
-
 
     const handleSubmit = () => {
         // console.log("Start Date:", startDate, "End Date:", endDate);
     };
+
+    console.log(selectedOption, "selectedOption");
 
     const brand = [
         { value: "BYD", label: "BYD" },
@@ -38,7 +41,12 @@ const Page = () => {
         <>
             <Navbar />
             <div className="p-10 bg-gray-50">
-                <h1 className="text-3xl text-gray-800 mb-6">Dashboard</h1>
+                <div>
+                    {" "}
+                    <MenuDash />
+                </div>
+
+                <h1 className="text-3xl text-gray-800 mb-6 ">Dashboard</h1>
                 <div className="flex items-center gap-16 mb-6">
                     <div className="flex-1 max-w-xs">
                         <label htmlFor="brand" className="text-gray-700 mb-2 block">
@@ -69,14 +77,16 @@ const Page = () => {
                                 block
                                 appearance="subtle"
                                 style={{ width: 160 }}
-                                shouldDisableDate={date => isAfter(date, new Date())}
+                                shouldDisableDate={(date) => isAfter(date, new Date())}
                             />
 
                             <DatePicker
                                 format="yyyy-MM-dd"
                                 value={endDate ? new Date(endDate) : null}
                                 onChange={(date) => {
-                                    const formattedDate = date ? format(new Date(date), "yyyy-MM-dd") : "";
+                                    const formattedDate = date
+                                        ? format(new Date(date), "yyyy-MM-dd")
+                                        : "";
                                     setEndDate(formattedDate);
                                 }}
                                 block
@@ -87,13 +97,26 @@ const Page = () => {
                     </div>
                 </div>
                 {selectedOption === "BYD" && (
-                    <BYDPage startDate={startDate}
+                    <BYDPage
+                        startDate={startDate}
                         endDate={endDate}
                         // selectedMonths={selectedMonths}
-                        setTotals={setTotals} />
+                        setTotals={setTotals}
+                    />
                 )}
-                {selectedOption === "Denza" && <DenzaPage startDate={startDate} endDate={endDate} setTotals={setTotals} />}
-                <NetInsurance />
+                {selectedOption === "Denza" && (
+                    <DenzaPage
+                        startDate={startDate}
+                        endDate={endDate}
+                        setTotals={setTotals}
+                    />
+                )}
+                {selectedOption === "BYD" ? (
+                    <>
+
+                        <NetInsurance startDate={startDate} endDate={endDate} />
+                    </>
+                ) : null}
             </div>
         </>
     );

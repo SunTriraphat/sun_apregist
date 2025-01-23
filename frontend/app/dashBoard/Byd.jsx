@@ -8,6 +8,7 @@ import { SelectPicker } from "rsuite";
 import { FaCalendarAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import { th } from "date-fns/locale";
+import NetInsurance from '../dashBoard/NetInsurance'
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function BYDPage({ startDate, endDate }) {
@@ -17,6 +18,7 @@ function BYDPage({ startDate, endDate }) {
     const [dataLine, setDataLine] = useState();
     const [selectedMonth, setSelectedMonth] = useState();
     const [month, setMonth] = useState();
+    const [premiumNet, setPremiumNet] = useState();
 
     // Fetch Data
     const fetchData = async () => {
@@ -26,9 +28,11 @@ function BYDPage({ startDate, endDate }) {
             if (endDate) params.end_date = endDate;
 
             const response = await axios.get(`${API_URL}getbyd_summary`, { params });
-            setDataSource(response.data);
+            setDataSource(response.data.data);
 
-            const total = response.data.reduce((sum, item) => sum + item.count, 0);
+            // console.log("response.data", response.data);
+
+            const total = response.data.data.reduce((sum, item) => sum + item.count, 0);
             setTotals((prev) => ({ ...prev, byd: total }));
         } catch (error) {
             console.error("Error fetching BYD data:", error);
@@ -173,7 +177,6 @@ function BYDPage({ startDate, endDate }) {
         })),
     ];
 
-    console.log("transformedDatadddd", transformedData);
     return (
         <>
             <div className="grid grid-cols-2 gap-6 bg-gray-50">
@@ -331,12 +334,13 @@ function BYDPage({ startDate, endDate }) {
                     ) : (
                         <>
                             <div className="mt-8">
-                                <BarChart dataSource={transformedData} title="Model Chart" />
+                                <BarChart dataSource={transformedData} title="Model" />
                             </div>
                         </>
                     )}
                 </div>
             </div>
+
         </>
     );
 }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo, Suspense } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 import axios from "axios";
 import numeral from "numeral";
 import Swal from 'sweetalert2';
@@ -177,7 +177,7 @@ export default function App() {
             });
             if (response.data.length > 0) {
                 setPermissions(response.data);
-               
+
             }
             setUserId(id);
 
@@ -191,7 +191,7 @@ export default function App() {
     const closePermissionModal = () => {
         setPermissions([])
         setIsModalPermissionOpen(false);
-        
+
     };
 
 
@@ -297,8 +297,8 @@ export default function App() {
     const handlePermissionSubmit = async (e) => {
         await setLoadingModal(true)
         e.preventDefault();
-        console.log('permissions.user_id',userId);
-        
+        console.log('permissions.user_id', userId);
+
 
         Swal.fire({
             title: "ยืนยันการแก้ไขสิทธิการใช้งาน?",
@@ -318,13 +318,13 @@ export default function App() {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ permissions, user_id: userId }) 
+                        body: JSON.stringify({ permissions, user_id: userId })
                     });
-                    console.log('response',response);
-                    
+                    console.log('response', response);
+
 
                     if (response.ok) {
-                      
+
                         // setIsLoading(true)
                         await fetchData()
 
@@ -334,7 +334,7 @@ export default function App() {
                             icon: 'success',
                             confirmButtonText: 'OK',
                         });
-                    
+
                         setIsModalPermissionOpen(false);
                     } else {
                         Swal.fire({
@@ -401,7 +401,7 @@ export default function App() {
     };
 
 
-    
+
     return (
         <div>
             <Navbar />
@@ -504,7 +504,7 @@ export default function App() {
                                                             <input
                                                                 type="checkbox"
                                                                 name="is_view"
-                                                                checked = {permissions.find(permission => permission.menu === item.code && permission.is_view == 1) ? true : false}
+                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_view == 1) ? true : false}
 
                                                                 onChange={(e) => handleCheckboxChange(e, item)}
                                                             />
@@ -513,7 +513,7 @@ export default function App() {
                                                             <input
                                                                 type="checkbox"
                                                                 name="is_create"
-                                                                checked = {permissions.find(permission => permission.menu === item.code && permission.is_create == 1) ? true : false}
+                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_create == 1) ? true : false}
 
                                                                 onChange={(e) => handleCheckboxChange(e, item)}
                                                             />
@@ -522,7 +522,7 @@ export default function App() {
                                                             <input
                                                                 type="checkbox"
                                                                 name="is_edit"
-                                                                checked = {permissions.find(permission => permission.menu === item.code && permission.is_edit == 1) ? true : false}
+                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_edit == 1) ? true : false}
 
                                                                 onChange={(e) => handleCheckboxChange(e, item)}
                                                             />
@@ -531,7 +531,7 @@ export default function App() {
                                                             <input
                                                                 type="checkbox"
                                                                 name="is_delete"
-                                                                checked = {permissions.find(permission => permission.menu === item.code && permission.is_delete == 1) ? true : false}
+                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_delete == 1) ? true : false}
 
                                                                 onChange={(e) => handleCheckboxChange(e, item)}
                                                             />

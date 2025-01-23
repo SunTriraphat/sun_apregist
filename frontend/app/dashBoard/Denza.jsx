@@ -202,14 +202,14 @@ function DenzaPage({ startDate, endDate }) {
                 </div>
             </div>
             <div className="grid grid-cols-2 gap-6 mt-10">
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                {/* <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart dataSource={modelData} title="Model" />
-                </div>
+                </div> */}
 
                 {/* Bar Chart */}
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+                {/* <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <BarChart dataSource={transformedData} title="Model Chart" />
-                </div>
+                </div> */}
             </div>
         </>
     );
