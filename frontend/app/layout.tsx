@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import ProviderWrapper from "./store/providerWrapper";
 
 import { siteConfig } from "@/config/site";
-// import { prompt } from "@/config/fonts";
+import { prompt } from "@/config/fonts";
 
 import "./index.css";
 
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" className={prompt.variable}>
       <body
         className={clsx("min-h-screen bg-background font-sans antialiased")}
         style={{ fontFamily: "var(--font-sans)" }}
