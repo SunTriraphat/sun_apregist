@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 
 import axios from "axios";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Image } from "@nextui-org/react";
@@ -45,7 +45,7 @@ function Page() {
     setSearchQuery(event.target.value);
   };
 
- 
+
 
   return (
     <>
@@ -136,13 +136,13 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       Model
                     </p>
-                    <p className="font-semibold">{filteredData.Model? filteredData.Model: "-"}</p>
+                    <p className="font-semibold">{filteredData.Model ? filteredData.Model : "-"}</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
                       คุ้มครอง
                     </p>
-                    <p className="font-semibold">{filteredData.start_date ? filteredData.start_date  : "-" }</p>
+                    <p className="font-semibold">{filteredData.start_date ? filteredData.start_date : "-"}</p>
                   </div>
                   <div className="mb-2 pb-2 border-b">
                     <p className="font-light text-sm text-gray-700 mb-1">
@@ -204,7 +204,7 @@ function Page() {
                     <p className="font-light text-sm text-gray-700 mb-1">
                       Vin No.
                     </p>
-                    <p className="font-semibold">{filteredData.Vin? filteredData.Vin : '-'}</p>
+                    <p className="font-semibold">{filteredData.Vin ? filteredData.Vin : '-'}</p>
                   </div>
 
                   <div className="mb-2 pb-2 border-b">
@@ -270,7 +270,7 @@ function Page() {
       ) : (
         <div className="pl-12">ไม่พบข้อมูลที่ตรงกับการค้นหา</div>
       )}
-  
+
     </>
   );
 }

@@ -5,7 +5,7 @@ import axios from "axios";
 import { addInsurance } from "../store/slice/insuranceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 
 function Homepage() {
   const dispatch = useDispatch();

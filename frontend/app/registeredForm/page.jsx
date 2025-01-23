@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo, Suspense } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 import axios from "axios";
 import numeral from "numeral";
 import Swal from 'sweetalert2';
@@ -339,7 +339,7 @@ export default function App() {
         return (
           <div className="relative flex items-center gap-2">
             {cellValue ? (
-              <FontAwesomeIcon icon={faPaperclip} /> 
+              <FontAwesomeIcon icon={faPaperclip} />
             ) : null}
           </div>
         );

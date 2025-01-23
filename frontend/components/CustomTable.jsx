@@ -17,7 +17,7 @@ import {
   Link
 } from "@nextui-org/react";
 import Swal from 'sweetalert2';
-import Navbar from "./Navbar";
+import Navbar from "./navBar/Navbar";
 import * as XLSX from "xlsx";
 import ImportComponent from "./Import"
 import CustomModal from "./CustomModal";

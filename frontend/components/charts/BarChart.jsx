@@ -43,6 +43,7 @@ const BarChart = ({ dataSource, title }) => {
                     id="charts"
                     primaryXAxis={{ interval: 1, valueType: "Category" }}
                     tooltip={{ enable: true, enableHighlight: true }}
+                    title={title}
                 >
                     <Inject
                         services={[LineSeries, Legend, Tooltip, DataLabel, Category]}

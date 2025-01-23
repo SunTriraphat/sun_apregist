@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 import { useLocation } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 const data = [
@@ -49,8 +49,8 @@ function Page() {
   const [loading, setLoading] = useState(false);
 
   const { id } = router.query;
-  console.log('vin',vin);
-  
+  console.log('vin', vin);
+
 
   // useEffect(() => {
   //   fetchData(vin)
@@ -59,14 +59,14 @@ function Page() {
     try {
       // const response = await axios.get(`${API_URL}showData`);
       // const response = await axios.get(`${API_URL}getdata_main`);
- 
+
       const response = await axios.post(`${API_URL}getdata_detail`, { vin: vin }, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      console.log('response',response);
-      
+      console.log('response', response);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
