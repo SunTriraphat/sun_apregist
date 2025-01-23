@@ -78,6 +78,8 @@ function BYDPage({ startDate, endDate }) {
             
             setMarket(response.data.marketShare);
             setTop(response.data.top);
+            localStorage.setItem("top", JSON.stringify(response.data.topByRegion));
+            localStorage.setItem("top10", JSON.stringify(response.data.top10Dealers));
         } catch (error) {
             console.error("Error fetching BYD market share data:", error);
         }
@@ -243,10 +245,19 @@ function BYDPage({ startDate, endDate }) {
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     {
                         market.length === 0 ? (
-                            <div className="flex flex-col justify-center items-center h-auto space-y-2">
-                                <p className="text-red-700 text-lg font-semibold text-center">
+                            <div className="flex flex-col justify-center items-center h-full space-y-2">
+                                <p className="text-gray-700 text-lg font-semibold text-center">
                                     ไม่มีข้อมูลที่แสดงในขณะนี้
                                 </p>
+                                <p className="text-gray-500 text-sm text-center">
+                                    โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+                                </p>
+                                <div className="flex flex-row justify-center items-end space-x-4 relative z-10 ">
+                                    <div className="circle animate-circle delay-0" />
+                                    <div className="circle animate-circle delay-1" />
+                                    <div className="circle animate-circle delay-2" />
+                                    <div className="circle animate-circle delay-3" />
+                                </div>
                             </div>
                         ) : (
                             <>
