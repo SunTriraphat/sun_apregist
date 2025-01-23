@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-// const API_URL = process.env.NEXT_PUBLIC_NETINSURANCE;
-// const Url = `${API_URL}api/cost/lmg/brand/get/275`;
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 function NetInsurance({ startDate, endDate }) {
     const [insuranceData, setInsuranceData] = useState([]);
@@ -27,24 +26,11 @@ function NetInsurance({ startDate, endDate }) {
         }
     };
 
-    console.log("response.data", insuranceData);
     useEffect(() => {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     if (insuranceData.length > 0) {
-    //         const totalPre = insuranceData.reduce((acc, item) => acc + parseFloat(item.pre), 0);
-    //         const totalPrb = insuranceData.reduce((acc, item) => acc + parseFloat(item.prb), 0);
-    //         const totalItems = insuranceData.length;
 
-    //         setTotals({
-    //             totalPre: totalPre,
-    //             totalPrb: totalPrb,
-    //             totalItems: totalItems
-    //         });
-    //     }
-    // }, [insuranceData]);
 
     if (loading) {
         return <div className="text-center">Loading...</div>;
