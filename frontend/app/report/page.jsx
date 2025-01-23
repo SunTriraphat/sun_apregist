@@ -1,5 +1,6 @@
 "use client";
-import Navbar from "../../components/Navbar";
+// import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navBar/Navbar";
 import { useState } from "react";
 import CustomTableClassic from "../../components/CustomTableClassic";
 import * as XLSX from "xlsx";

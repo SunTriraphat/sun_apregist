@@ -87,6 +87,11 @@ function Navbar() {
               </Link>
             </li>
             <li>
+              <Link href="/report" className={style.navItem}>
+                รายงาน
+              </Link>
+            </li>
+            <li>
               <Link href="/dashBoard" className={style.navItem}>
                 แดชบอร์ด
               </Link>
