@@ -223,7 +223,7 @@ function BYDPage({ startDate, endDate }) {
                                 {chunkedData.map((row, rowIndex) => (
                                     <div
                                         key={rowIndex}
-                                        className="grid grid-cols-7 gap-4 py-4 px-6"
+                                        className="grid grid-cols-6 gap-4 py-4 px-6"
                                     >
                                         {row.map((item, index) => (
                                             <div
@@ -382,12 +382,14 @@ function BYDPage({ startDate, endDate }) {
                     ) : (
                         <>
                             <div className="mt-8">
+
                                 <BarChart dataSource={transformedData} title="Model" />
+
                                 <div className="grid grid-cols-4 gap-4 py-4 px-6">
                                     {["Week 1", "Week 2", "Week 3", "Week 4"].map((week, index) => {
                                         const weekData = transformedData.filter(item => item.x === week);
                                         return (
-                                            <div key={week} className={`${colorsModel[index % colorsModel.length]} text-gray-600 rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col   hover:shadow-xl transition-shadow duration-300`}>
+                                            <div key={week} className={`${colorsModel[index % colorsModel.length]} text-gray-600 rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col justify-center hover:shadow-xl transition-shadow duration-300`}>
                                                 <p className="font-bold">{week.toUpperCase()}</p>
                                                 {weekData.map((data, index) => (
                                                     <p key={index} className=" font-normal ">
