@@ -144,7 +144,7 @@ function NetInsurance({ startDate, endDate, option }) {
                         <div className="bg-[#f0fdf4] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
                             <p className="font-bold text-2xl text-center mb-4 ">EW</p>
                             <div className="grid grid-cols-3 gap-4 font-semibold text-sm text-gray-600">
-                                <div className="text-center"> </div>
+                                <div className="text-center">Ew</div>
                                 <div className="text-center">Amount</div>
                                 <div className="text-center">Net Premium</div>
                             </div>
