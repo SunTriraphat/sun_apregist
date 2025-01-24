@@ -100,7 +100,7 @@ const Page = () => {
                 )}
 
 
-                <NetInsurance startDate={startDate} endDate={endDate} />
+                <NetInsurance startDate={startDate} endDate={endDate} option={selectedOption} />
 
             </div>
         </>
