@@ -51,6 +51,7 @@
 
  .button-link {
      text-decoration: none;
+     font-size: 14px !important;
  }
 
  .button-link:hover {
