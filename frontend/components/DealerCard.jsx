@@ -18,7 +18,7 @@ const DealerCard = ({ title, dealers, gradient }) => {
                 {title}
             </h3>
             <div className="overflow-x-auto mt-10">
-                <div className="grid grid-cols-9 font-semibold text-sm text-gray-600 text-center border-b border-gray-300 pb-2 mb-4">
+                <div className="grid grid-cols-[200px_repeat(8,_1fr)] font-semibold text-sm text-gray-600 text-center border-b border-gray-300 pb-2 mb-4">
                     <div>Dealer</div>
                     <div>Sunday</div>
                     <div>Lmg</div>
@@ -32,11 +32,10 @@ const DealerCard = ({ title, dealers, gradient }) => {
                 {visibleDealers.map((item, index) => (
                     <div
                         key={index}
-                        className={`grid grid-cols-9 text-center text-gray-700 py-2 ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                        }`}
+                        className={`grid grid-cols-[200px_repeat(8,_1fr)] text-center text-gray-700 py-2 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                            }`}
                     >
-                        <div className="w-60 font-semibold">{item.dealer}</div>
+                        <div className="w-full font-semibold text-center">{item.dealer}</div>
                         <div>{item.Sunday || 0}</div>
                         <div>{item.LMG || 0}</div>
                         <div>{item.MuangThai || 0}</div>
@@ -50,6 +49,7 @@ const DealerCard = ({ title, dealers, gradient }) => {
                     </div>
                 ))}
             </div>
+
             {dealers.length > 5 && (
                 <div className="flex justify-center mt-4">
                     <button
