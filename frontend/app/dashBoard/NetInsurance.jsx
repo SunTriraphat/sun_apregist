@@ -7,6 +7,7 @@ function NetInsurance({ startDate, endDate, option }) {
     const [insuranceData, setInsuranceData] = useState([]);
     const [insuranceDenza, setInsuranceDenza] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [ew, setEw] = useState([])
 
     console.log("startDate", startDate);
     console.log("endDate", endDate);
@@ -18,7 +19,10 @@ function NetInsurance({ startDate, endDate, option }) {
 
             const response = await axios.get(`${API_URL}getbyd_summary`, { params });
             const premiumData = response.data.premium;
+
             setInsuranceData(premiumData);
+            setEw(response.data.premium_ew)
+            console.log("EW", response.data.premium_ew);
 
         } catch (error) {
             console.error("Error fetching BYD data:", error);
@@ -36,7 +40,7 @@ function NetInsurance({ startDate, endDate, option }) {
 
             const response = await axios.get(`${API_URL}getdenza_summary`, { params });
             const premiumData = response.data.premium;
-            console.log("premiumDataDanza", premiumData);
+            // console.log("premiumDataDanza", premiumData);
             setInsuranceDenza(premiumData);
 
         } catch (error) {
@@ -47,9 +51,12 @@ function NetInsurance({ startDate, endDate, option }) {
     };
 
     useEffect(() => {
-        fetchData();
-        fetchDataDenza();
-    }, []);
+        if (startDate || endDate) {
+            fetchData();
+            fetchDataDenza();
+        }
+
+    }, [startDate, endDate]);
 
 
 
@@ -62,7 +69,7 @@ function NetInsurance({ startDate, endDate, option }) {
         <>
             {option === "BYD" ? (<> <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg mt-10">
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 p-8">
                         {/* First Section */}
 
                         <div className="bg-[#fef2f2] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
@@ -128,6 +135,29 @@ function NetInsurance({ startDate, endDate, option }) {
                                     <div className="text-center font-semibold">
                                         {new Intl.NumberFormat().format(
                                             Object.values(insuranceData).reduce((acc, item) => acc + item.total_prb, 0)
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Ew */}
+                        <div className="bg-[#f0fdf4] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+                            <p className="font-bold text-2xl text-center mb-4 ">EW</p>
+                            {/* <div className="grid grid-cols-3 gap-4 font-semibold text-sm text-gray-600">
+                                <div className="text-center">Insurance</div>
+                                <div className="text-center">Amount</div>
+                                <div className="text-center">Net Premium</div>
+                            </div> */}
+                            <div className="mt-4 space-y-4">
+
+                                <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all">
+                                    <div className="text-center font-semibold">รวมทั้งหมด</div>
+                                    <div className="text-center font-semibold">
+                                        {Object.values(ew).reduce((acc, item) => acc + item.amount, 0)}
+                                    </div>
+                                    <div className="text-center font-semibold">
+                                        {new Intl.NumberFormat().format(
+                                            Object.values(ew).reduce((acc, item) => acc + item.total_ew, 0)
                                         )}
                                     </div>
                                 </div>
@@ -226,6 +256,7 @@ function NetInsurance({ startDate, endDate, option }) {
                                     </div>
                                 </div>
                             </div>
+
 
                             {/* <div className="bg-[#f0fdf4] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
                             <p className="font-bold text-2xl text-center mb-4 ">Ew</p>

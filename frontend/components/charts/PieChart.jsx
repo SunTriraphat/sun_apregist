@@ -29,6 +29,7 @@ const PieChart = ({ dataSource, title }) => {
         }
     };
 
+
     const load = (args) => {
         let selectedTheme = location.hash.split("/")[1] || "Fluent2";
         args.accumulation.theme = (
@@ -61,7 +62,7 @@ const PieChart = ({ dataSource, title }) => {
                     enableBorderOnMouseMove={false}
                     tooltip={{
                         enable: true,
-                        format: "<b>${point.x}</b><br>Browser Share: <b>${point.y}%</b>",
+                        format: "<b>${point.x}</b> <br> <b>${point.y}%</b>",
                         header: "",
                         enableHighlight: true,
                     }}
@@ -77,8 +78,9 @@ const PieChart = ({ dataSource, title }) => {
                     />
                     <AccumulationSeriesCollectionDirective>
                         <AccumulationSeriesDirective
+
                             dataSource={dataSource}
-                            name="Browser"
+                            name="count"
                             xName="x"
                             yName="y"
                             explode={true}

@@ -49,6 +49,7 @@ function BYDPage({ startDate, endDate }) {
 
             const response = await axios.get(`${API_URL}getbyd_model`, { params });
             setModelData(response.data);
+            console.log("Model", response.data);
         } catch (error) {
             console.error("Error fetching BYD model data:", error);
         }
@@ -63,6 +64,7 @@ function BYDPage({ startDate, endDate }) {
                 params,
             });
             setDataLine(response.data);
+            console.log("Line", response.data);
         } catch (error) {
             console.error("Error fetching BYD model line data:", error);
         }
@@ -163,6 +165,13 @@ function BYDPage({ startDate, endDate }) {
         "bg-gradient-to-r from-green-500 to-green-400",
         "bg-gradient-to-r from-purple-500 to-purple-400",
     ];
+    const colorsModel = [
+        "bg-gradient-to-b from-blue-200 to-blue-300",
+        "bg-gradient-to-b from-green-100 to-green-200",
+        "bg-gradient-to-b from-purple-100 to-purple-200",
+        "bg-gradient-to-b from-pink-100 to-pink-200",
+
+    ];
     const ModelLine = transformData(dataLine);
 
     const transformedData = [
@@ -179,6 +188,8 @@ function BYDPage({ startDate, endDate }) {
             group: "sealion7",
         })),
     ];
+
+    console.log("transformedData", transformedData)
 
     return (
         <>
@@ -320,11 +331,23 @@ function BYDPage({ startDate, endDate }) {
 
                         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                             <PieChart dataSource={modelData} title="Model" />
+                            <div className="grid grid-cols-6 gap-4 py-4 px-6" >
+                                {modelData.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
+                                    >
+                                        <p className="text-center text-xs">{item.x}</p>
+                                        <p className="text-center text-gray-500">
+                                            {new Intl.NumberFormat().format(item.count)}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </>
                 )}
 
-                {/* Bar Chart */}
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <label htmlFor="dateLine" className="text-gray-700 mb-2 block">
                         เลือกช่วงเวลา
@@ -360,6 +383,21 @@ function BYDPage({ startDate, endDate }) {
                         <>
                             <div className="mt-8">
                                 <BarChart dataSource={transformedData} title="Model" />
+                                <div className="grid grid-cols-4 gap-4 py-4 px-6">
+                                    {["Week 1", "Week 2", "Week 3", "Week 4"].map((week, index) => {
+                                        const weekData = transformedData.filter(item => item.x === week);
+                                        return (
+                                            <div key={week} className={`${colorsModel[index % colorsModel.length]} text-gray-600 rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col   hover:shadow-xl transition-shadow duration-300`}>
+                                                <p className="font-bold">{week.toUpperCase()}</p>
+                                                {weekData.map((data, index) => (
+                                                    <p key={index} className=" font-normal ">
+                                                        <span className="font-bold">{data.group.charAt(0).toUpperCase() + data.group.slice(1)} </span> : {data.total}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </>
                     )}
