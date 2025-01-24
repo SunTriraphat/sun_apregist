@@ -11,6 +11,44 @@
      font-family: var(--font-sans);
  }
 
+ a {
+     font-size: 16px !important;
+     text-decoration: none !important;
+
+
+ }
+
+ /* 
+ a {
+     color: #1675e0;
+     text-decoration: none !important;
+     position: relative;
+    
+ }
+
+ a:hover {
+     color: #1675e0;
+     text-decoration: none !important;
+ }
+
+
+ a::after {
+     content: '';
+     position: absolute;
+     left: 50%;
+     bottom: 0;
+     width: 0%;
+     height: 2px;
+     background-color: #1675e0;
+     transition: width 0.3s ease;
+     transform: translateX(-50%);
+ }
+
+ a:hover::after {
+     width: 30%;
+
+ } */
+
  .button-link {
      text-decoration: none;
  }
