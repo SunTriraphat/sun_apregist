@@ -96,7 +96,7 @@ function NetInsurance({ startDate, endDate, option }) {
                                 <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all mt-4">
                                     <div className="text-center font-semibold">รวมทั้งหมด</div>
                                     <div className="text-center font-semibold">
-                                        {Object.values(insuranceData).reduce((acc, item) => acc + item.amount, 0)}
+                                        {new Intl.NumberFormat().format(Object.values(insuranceData).reduce((acc, item) => acc + item.amount, 0))}
                                     </div>
                                     <div className="text-center font-semibold">
                                         {new Intl.NumberFormat().format(
@@ -121,7 +121,7 @@ function NetInsurance({ startDate, endDate, option }) {
                                         className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all"
                                     >
                                         <div className="text-center">{key.replace(/_/g, " ")}</div>
-                                        <div className="text-center">{data.amount}</div>
+                                        <div className="text-center">{new Intl.NumberFormat().format(data.amount)}</div>
                                         <div className="text-center">
                                             {new Intl.NumberFormat().format(data.total_prb)}
                                         </div>
@@ -130,7 +130,7 @@ function NetInsurance({ startDate, endDate, option }) {
                                 <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all">
                                     <div className="text-center font-semibold">รวมทั้งหมด</div>
                                     <div className="text-center font-semibold">
-                                        {Object.values(insuranceData).reduce((acc, item) => acc + item.amount, 0)}
+                                        {new Intl.NumberFormat().format(Object.values(insuranceData).reduce((acc, item) => acc + item.amount, 0))}
                                     </div>
                                     <div className="text-center font-semibold">
                                         {new Intl.NumberFormat().format(
@@ -143,22 +143,25 @@ function NetInsurance({ startDate, endDate, option }) {
                         {/* Ew */}
                         <div className="bg-[#f0fdf4] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
                             <p className="font-bold text-2xl text-center mb-4 ">EW</p>
-                            {/* <div className="grid grid-cols-3 gap-4 font-semibold text-sm text-gray-600">
-                                <div className="text-center">Insurance</div>
+                            <div className="grid grid-cols-3 gap-4 font-semibold text-sm text-gray-600">
+                                <div className="text-center"> </div>
                                 <div className="text-center">Amount</div>
                                 <div className="text-center">Net Premium</div>
-                            </div> */}
+                            </div>
                             <div className="mt-4 space-y-4">
 
                                 <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all">
                                     <div className="text-center font-semibold">รวมทั้งหมด</div>
                                     <div className="text-center font-semibold">
-                                        {Object.values(ew).reduce((acc, item) => acc + item.amount, 0)}
+                                        {new Intl.NumberFormat().format(
+                                            Object.values(ew).reduce((acc, item) => acc + item.amount, 0)
+                                        )}
                                     </div>
                                     <div className="text-center font-semibold">
                                         {new Intl.NumberFormat().format(
                                             Object.values(ew).reduce((acc, item) => acc + item.total_ew, 0)
                                         )}
+
                                     </div>
                                 </div>
                             </div>
@@ -237,7 +240,8 @@ function NetInsurance({ startDate, endDate, option }) {
                                             className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all"
                                         >
                                             <div className="text-center">{key.replace(/_/g, " ")}</div>
-                                            <div className="text-center">{data.amount}</div>
+                                            <div className="text-center">
+                                                {new Intl.NumberFormat().format(data.amount)}</div>
                                             <div className="text-center">
                                                 {new Intl.NumberFormat().format(data.total_prb)}
                                             </div>
@@ -246,7 +250,7 @@ function NetInsurance({ startDate, endDate, option }) {
                                     <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all">
                                         <div className="text-center font-semibold">รวมทั้งหมด</div>
                                         <div className="text-center font-semibold">
-                                            {Object.values(insuranceDenza).reduce((acc, item) => acc + item.amount, 0)}
+                                            {new Intl.NumberFormat().format(Object.values(insuranceDenza).reduce((acc, item) => acc + item.amount, 0))}
                                         </div>
                                         <div className="text-center font-semibold">
                                             {new Intl.NumberFormat().format(
