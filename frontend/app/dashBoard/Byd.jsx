@@ -40,7 +40,7 @@ function BYDPage({ startDate, endDate }) {
         }
     };
 
-    // Fetch Model Data
+
     const fetchModelData = async () => {
         try {
             const params = {};
@@ -54,7 +54,7 @@ function BYDPage({ startDate, endDate }) {
         }
     };
 
-    // Fetch Model Line Data
+
     const fetchModelLineMonth = async (month) => {
         try {
             const params = {};
@@ -75,7 +75,7 @@ function BYDPage({ startDate, endDate }) {
             formData.append("end_date", endDate);
 
             const response = await axios.post(`${API_URL}get_market_share`, formData);
-            
+
             setMarket(response.data.marketShare);
             setTop(response.data.top);
             localStorage.setItem("top", JSON.stringify(response.data.topByRegion));
@@ -85,7 +85,7 @@ function BYDPage({ startDate, endDate }) {
         }
     };
 
-    // Handle Date Range Changes
+
     useEffect(() => {
         if (startDate || endDate) {
             fetchData();
@@ -94,7 +94,7 @@ function BYDPage({ startDate, endDate }) {
         }
     }, [startDate, endDate]);
 
-    // Generate Month Data
+
     const transformMont = (startDate, endDate) => {
         const months = [];
         const start = new Date(startDate);
@@ -139,7 +139,7 @@ function BYDPage({ startDate, endDate }) {
     };
 
     const chunkedData = chunkData(dataSource, 7);
-    
+
     const transformData = (dataLine) => {
         if (!dataLine || !Array.isArray(dataLine)) {
             return {};
@@ -193,7 +193,7 @@ function BYDPage({ startDate, endDate }) {
                             <p className="text-gray-500 text-sm text-center">
                                 โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
                             </p>
-                            <div className="flex flex-row justify-center items-end space-x-4 relative z-10 ">
+                            <div className="flex flex-row justify-center items-end space-x-4 relative  ">
                                 <div className="circle animate-circle delay-0" />
                                 <div className="circle animate-circle delay-1" />
                                 <div className="circle animate-circle delay-2" />
@@ -244,14 +244,14 @@ function BYDPage({ startDate, endDate }) {
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     {
                         market.length === 0 ? (
-                            <div className="flex flex-col justify-center items-center h-full space-y-2">
+                            <div className="flex flex-col justify-center items-center h-96 space-y-2">
                                 <p className="text-gray-700 text-lg font-semibold text-center">
                                     ไม่มีข้อมูลที่แสดงในขณะนี้
                                 </p>
                                 <p className="text-gray-500 text-sm text-center">
                                     โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
                                 </p>
-                                <div className="flex flex-row justify-center items-end space-x-4 relative z-10 ">
+                                <div className="flex flex-row justify-center items-end space-x-4 relative  ">
                                     <div className="circle animate-circle delay-0" />
                                     <div className="circle animate-circle delay-1" />
                                     <div className="circle animate-circle delay-2" />
@@ -261,33 +261,35 @@ function BYDPage({ startDate, endDate }) {
                         ) : (
                             <>
                                 <PieChart dataSource={market} title="Market Share" />
+                                <div className="flex space-x-5 py-2">
+                                    <div className="font-semibold text-gray-500 text-lg flex items-center">
+                                        Top Dealers
+                                    </div>
+                                    <Link href="/topDealers" className="button-link">
+                                        <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-28 duration-300 ease-in-out hover:bg-blue-800">
+                                            Read more <MdNavigateNext />
+                                        </div>
+                                    </Link>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-2 py-4">
+                                    {top.map((tops, index) => (
+                                        <div
+                                            key={index}
+                                            className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
+                                        >
+                                            <p className="text-center text-base font-bold">{tops.dealer}</p>
+                                            <p className="text-center text-gray-200 text-lg mt-2">
+                                                {tops.cont}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
                             </>
                         )
                     }
-                    <div className="flex space-x-5 py-2">
-                        <div className="font-semibold text-gray-500 text-lg flex items-center">
-                            Top Dealers
-                        </div>
-                        <Link href="/topDealers" className="button-link">
-                            <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-28 duration-300 ease-in-out hover:bg-blue-800">
-                                Read more <MdNavigateNext />
-                            </div>
-                        </Link>
-                    </div>
 
-                    <div className="grid grid-cols-3 gap-2 py-4">
-                        {top.map((tops, index) => (
-                            <div
-                                key={index}
-                                className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
-                            >
-                                <p className="text-center text-base font-bold">{tops.dealer}</p>
-                                <p className="text-center text-gray-200 text-lg mt-2">
-                                    {tops.cont}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+
                 </div>
             </div>
 
@@ -296,7 +298,7 @@ function BYDPage({ startDate, endDate }) {
             <div className="grid grid-cols-2 gap-6 mt-10 h-full ">
                 {modelData.length === 0 ? (
                     <>
-                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg h-96 flex flex-row justify-center items-center z-10">
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg h-96 flex flex-row justify-center items-center ">
                             <div className="grid grid-flow-row justify-center items-center   space-y-2">
                                 <p className="text-gray-700 text-lg font-semibold text-center">
                                     ไม่มีข้อมูลที่แสดงในขณะนี้
@@ -315,7 +317,7 @@ function BYDPage({ startDate, endDate }) {
                     </>
                 ) : (
                     <>
-                        {" "}
+
                         <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                             <PieChart dataSource={modelData} title="Model" />
                         </div>
@@ -339,14 +341,14 @@ function BYDPage({ startDate, endDate }) {
                     />
                     {transformedData.length === 0 ? (
                         <>
-                            <div className="flex flex-col justify-center items-center h-full space-y-2 z-10">
+                            <div className="flex flex-col justify-center items-center h-96 space-y-2 ">
                                 <p className="text-gray-700 text-lg font-semibold text-center">
                                     ไม่มีข้อมูลที่แสดงในขณะนี้
                                 </p>
                                 <p className="text-gray-500 text-sm text-center">
                                     โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
                                 </p>
-                                <div className="flex flex-row justify-center items-end space-x-4 relative z-10 ">
+                                <div className="flex flex-row justify-center items-end space-x-4 relative  ">
                                     <div className="circle animate-circle delay-0" />
                                     <div className="circle animate-circle delay-1" />
                                     <div className="circle animate-circle delay-2" />

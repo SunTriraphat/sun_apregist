@@ -50,23 +50,35 @@ function NetInsurance({ startDate, endDate }) {
                                 <div className="text-center">Net Premium</div>
                             </div>
                             <div className="mt-4 space-y-4">
+
                                 {Object.entries(insuranceData).map(([key, data], index) => (
-                                    <div
-                                        key={index}
-                                        className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all"
-                                    >
-                                        <div className="text-center">{key.replace(/_/g, " ")}</div>
-                                        <div className="text-center">{data.amount}</div>
-                                        <div className="text-center">
-                                            {new Intl.NumberFormat().format(data.total_pre)}
+                                    <div key={index}>
+                                        <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all">
+                                            <div className="text-center">{key.replace(/_/g, " ")}</div>
+                                            <div className="text-center">{data.amount}</div>
+                                            <div className="text-center">
+                                                {new Intl.NumberFormat().format(data.total_pre)}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
+
+                                <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all mt-4">
+                                    <div className="text-center font-semibold">รวมทั้งหมด</div>
+                                    <div className="text-center font-semibold">
+                                        {Object.values(insuranceData).reduce((acc, item) => acc + item.amount, 0)}
+                                    </div>
+                                    <div className="text-center font-semibold">
+                                        {new Intl.NumberFormat().format(
+                                            Object.values(insuranceData).reduce((acc, item) => acc + item.total_pre, 0)
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div className="bg-[#fffbeb] rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
-                            <p className="font-bold text-2xl text-center mb-4 ">Compulosry</p>
+                            <p className="font-bold text-2xl text-center mb-4 ">Compulsory</p>
                             <div className="grid grid-cols-3 gap-4 font-semibold text-sm text-gray-600">
                                 <div className="text-center">Insurance</div>
                                 <div className="text-center">Amount</div>
@@ -85,6 +97,17 @@ function NetInsurance({ startDate, endDate }) {
                                         </div>
                                     </div>
                                 ))}
+                                <div className="grid grid-cols-3 gap-4 text-sm py-3 px-4 rounded-lg shadow-sm transition-all">
+                                    <div className="text-center font-semibold">รวมทั้งหมด</div>
+                                    <div className="text-center font-semibold">
+                                        {Object.values(insuranceData).reduce((acc, item) => acc + item.amount, 0)}
+                                    </div>
+                                    <div className="text-center font-semibold">
+                                        {new Intl.NumberFormat().format(
+                                            Object.values(insuranceData).reduce((acc, item) => acc + item.total_prb, 0)
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

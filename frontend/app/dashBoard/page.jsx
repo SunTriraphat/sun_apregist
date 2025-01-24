@@ -98,12 +98,10 @@ const Page = () => {
                         setTotals={setTotals}
                     />
                 )}
-                {selectedOption === "BYD" ? (
-                    <>
 
-                        <NetInsurance startDate={startDate} endDate={endDate} />
-                    </>
-                ) : null}
+
+                <NetInsurance startDate={startDate} endDate={endDate} />
+
             </div>
         </>
     );

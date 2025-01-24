@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import PieChart from "../../components/charts/PieChart";
 import axios from "axios";
 import BarChart from "../../components/charts/BarChart";
+import Link from "next/link";
+import { MdNavigateNext } from "react-icons/md";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function DenzaPage({ startDate, endDate }) {
@@ -17,12 +20,10 @@ function DenzaPage({ startDate, endDate }) {
             const response = await axios.get(`${API_URL}getdenza_summary`, {
                 params,
             });
-            setDenza(response.data);
-            const total = response.data.reduce(
-                (sum, currentObject) => sum + currentObject.count,
-                0
-            );
-            setTotals((prev) => ({ ...prev, denza: total }));
+            console.log("response.data DENZA", response.data);
+            setDenza(response.data.data);
+            const total = response.data.data.reduce((sum, item) => sum + item.count, 0);
+            setTotals((prev) => ({ ...prev, denza: total }))
         } catch (error) {
             console.error("Error fetching Denza data:", error);
         }
@@ -193,10 +194,16 @@ function DenzaPage({ startDate, endDate }) {
 
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <PieChart dataSource={marketShare} title="Market Share" />
-
                     <PieChart dataSource={marketShare} title="Market Share" />
-                    <div className="font-semibold text-gray-800 text-lg mt-6">
-                        Top Dealers
+                    <div className="flex space-x-5 py-2">
+                        <div className="font-semibold text-gray-500 text-lg flex items-center">
+                            Top Dealers
+                        </div>
+                        <Link href="/topDealers" className="button-link">
+                            <div className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-400 text-white p-2 flex justify-center items-center w-28 duration-300 ease-in-out hover:bg-blue-800">
+                                Read more <MdNavigateNext />
+                            </div>
+                        </Link>
                     </div>
                     <div className="grid grid-cols-3 gap-2 py-2">
                         {top.map((tops, index) => (
