@@ -12,7 +12,7 @@ import "./style.css";
 import MenuDash from "../../components/menuDash/MenuDash";
 const Page = () => {
     const [totals, setTotals] = useState({ byd: 0, denza: 0 });
-    const [selectedOption, setSelectedOption] = useState("BYD");
+    const [selectedOption, setSelectedOption] = useState("byd");
     const today = new Date();
     const firstDayOfMonth = startOfMonth(today);
     const [startDate, setStartDate] = useState(
@@ -22,8 +22,8 @@ const Page = () => {
     const [endDate, setEndDate] = useState(format(today, "yyyy-MM-dd"));
 
     const brand = [
-        { value: "BYD", label: "BYD" },
-        { value: "Denza", label: "Denza" },
+        { value: "byd", label: "byd" },
+        { value: "denza", label: "denza" },
     ];
     return (
         <>
@@ -83,19 +83,21 @@ const Page = () => {
                         </InputGroup>
                     </div>
                 </div>
-                {selectedOption === "BYD" && (
+                {selectedOption === "byd" && (
                     <BYDPage
                         startDate={startDate}
                         endDate={endDate}
                         // selectedMonths={selectedMonths}
                         setTotals={setTotals}
+                        option={selectedOption}
                     />
                 )}
-                {selectedOption === "Denza" && (
+                {selectedOption === "denza" && (
                     <DenzaPage
                         startDate={startDate}
                         endDate={endDate}
                         setTotals={setTotals}
+                        option={selectedOption}
                     />
                 )}
 

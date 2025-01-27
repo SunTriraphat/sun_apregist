@@ -7,10 +7,32 @@ import { MdNavigateNext } from "react-icons/md";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-function DenzaPage({ startDate, endDate }) {
+function DenzaPage({ startDate, endDate, option }) {
     const [denza, setDenza] = useState([]);
     const [totals, setTotals] = useState(0);
     const [modelData, setModelData] = useState([]);
+    const [market, setMarket] = useState([]);
+    const [topDealers, setTopDealers] = useState([]);
+    const fetchMarketShare = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("start_date", startDate);
+            formData.append("end_date", endDate);
+            formData.append("brand", option);
+
+            const response = await axios.post(`${API_URL}get_market_share`, formData);
+
+            setMarket(response.data.marketShare);
+            setTopDealers(response.data.top);
+            localStorage.setItem("top", JSON.stringify(response.data.topByRegion));
+            localStorage.setItem("top10", JSON.stringify(response.data.top10Dealers));
+            localStorage.setItem("brand", JSON.stringify(option));
+        } catch (error) {
+            console.error("Error fetching BYD market share data:", error);
+        }
+    };
+    console.log("Brand DENZA", option);
+
     const fetchData = async () => {
         try {
             const params = {};
@@ -20,7 +42,7 @@ function DenzaPage({ startDate, endDate }) {
             const response = await axios.get(`${API_URL}getdenza_summary`, {
                 params,
             });
-            console.log("response.data DENZA", response.data);
+            // console.log("response.data DENZA", response.data);
             setDenza(response.data.data);
             const total = response.data.data.reduce((sum, item) => sum + item.count, 0);
             setTotals((prev) => ({ ...prev, denza: total }))
@@ -45,6 +67,7 @@ function DenzaPage({ startDate, endDate }) {
     useEffect(() => {
         fetchData();
         fetchModelData();
+        fetchMarketShare()
     }, []);
 
     const dataMockup = {
@@ -95,11 +118,6 @@ function DenzaPage({ startDate, endDate }) {
         ...dataMockup.selion7.map((item) => ({ ...item, group: "selion7" })),
     ];
 
-    const data = [
-        { x: 'Week 1', y: 28 },
-        { x: 'Week 2', y: 19 },
-        { x: 'Week 3', y: 56 },
-    ];
 
     const chunkData = (data, columns) => {
         const chunked = [];
@@ -111,19 +129,6 @@ function DenzaPage({ startDate, endDate }) {
 
     const chunkedDenza = chunkData(denza, 3);
 
-    const marketShare = [
-        { x: "Bkk & Greater Bangkok", y: 52, text: "Bkk & Greater Bangkok: 52% " },
-        { x: "Eastern", y: 13, text: "Eastern: 13%" },
-        { x: "Northeastern", y: 10, text: "Northeastern: 10%" },
-        { x: "Northern", y: 9, text: "Northern: 9%" },
-        { x: "Southern", y: 6, text: "Southern: 6%" },
-        { x: "Western & Northcentral", y: 10, text: "Western & Northcentral: 10%" },
-    ];
-    const top = [
-        { dealer: "Byd susco beyone", cont: 337 },
-        { dealer: "Byd Jinlong Motors", cont: 306 },
-        { dealer: "Byd Metromobile", cont: 236 },
-    ];
     const colors = [
         "bg-gradient-to-r from-blue-500 to-blue-400",
         "bg-gradient-to-r from-green-500 to-green-400",
@@ -193,8 +198,8 @@ function DenzaPage({ startDate, endDate }) {
                 )}
 
                 <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <PieChart dataSource={marketShare} title="Market Share" />
-                    <PieChart dataSource={marketShare} title="Market Share" />
+                    <PieChart dataSource={market} title="Market Share" />
+                    <PieChart dataSource={market} title="Market Share" />
                     <div className="flex space-x-5 py-2">
                         <div className="font-semibold text-gray-500 text-lg flex items-center">
                             Top Dealers
@@ -206,7 +211,7 @@ function DenzaPage({ startDate, endDate }) {
                         </Link>
                     </div>
                     <div className="grid grid-cols-3 gap-2 py-2">
-                        {top.map((tops, index) => (
+                        {topDealers.map((tops, index) => (
                             <div
                                 key={index}
                                 className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
