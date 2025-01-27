@@ -224,7 +224,7 @@ function BYDPage({ startDate, endDate, option }) {
                 {chunkedData.map((row, rowIndex) => (
                   <div
                     key={rowIndex}
-                    className="grid grid-cols-6 gap-4 py-4 px-6"
+                    className="grid md:grid-cols-3 xl:grid-cols-6 gap-4 py-4 px-6"
                   >
                     {row.map((item, index) => (
                       <div
@@ -283,16 +283,16 @@ function BYDPage({ startDate, endDate, option }) {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 py-4">
+              <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-2 py-4">
                 {top.map((tops, index) => (
                   <div
                     key={index}
                     className={`${colors[index % colors.length]} text-white rounded-lg shadow-md p-6 text-sm font-semibold flex flex-col items-center justify-center hover:shadow-xl transition-shadow duration-300`}
                   >
-                    <p className="text-center text-base font-bold">
+                    <p className="text-center text-base font-bold sm:text-small md:text-sm lg:text-lg">
                       {tops.dealer}
                     </p>
-                    <p className="text-center text-gray-200 text-lg mt-2">
+                    <p className="text-center text-gray-200 text-lg mt-2 sm:text-xl md:text-2xl">
                       {tops.cont}
                     </p>
                   </div>
@@ -329,7 +329,7 @@ function BYDPage({ startDate, endDate, option }) {
           <>
             <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
               <PieChart dataSource={modelData} title="Model" />
-              <div className="grid grid-cols-6 gap-4 py-4 px-6">
+              <div className="grid  md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 py-4 px-6">
                 {modelData.map((item, index) => (
                   <div
                     key={index}
@@ -382,7 +382,7 @@ function BYDPage({ startDate, endDate, option }) {
               <div className="mt-8">
                 <BarChart dataSource={transformedData} title="Model" />
 
-                <div className="grid grid-cols-4 gap-4 py-4 px-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 py-4 px-6">
                   {["Week 1", "Week 2", "Week 3", "Week 4"].map(
                     (week, index) => {
                       const weekData = transformedData.filter(
@@ -405,7 +405,7 @@ function BYDPage({ startDate, endDate, option }) {
                                 {data.group.charAt(0).toUpperCase() +
                                   data.group.slice(1)}{" "}
                               </span>
-                              : {data.total}
+                              : {data?.total}
                             </p>
                           ))}
                           <p className="font-bold mt-2 text-gray-700">

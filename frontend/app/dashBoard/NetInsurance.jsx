@@ -8,7 +8,7 @@ function NetInsurance({ startDate, endDate, option }) {
   const [loading, setLoading] = useState(true);
   const [ew, setEw] = useState([]);
 
-  console.log("Total", insuranceData);
+  //   console.log("Total", insuranceData);
   const fetchData = async () => {
     try {
       const params = {};
@@ -109,9 +109,9 @@ function NetInsurance({ startDate, endDate, option }) {
                           <div className="text-center">
                             {key.replace(/_/g, " ")}
                           </div>
-                          <div className="text-center">{data.amount}</div>
+                          <div className="text-center">{data?.amount}</div>
                           <div className="text-center">
-                            {new Intl.NumberFormat().format(data.total_pre)}
+                            {new Intl.NumberFormat().format(data?.total_pre)}
                           </div>
                         </div>
                       </div>
