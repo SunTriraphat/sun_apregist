@@ -8,7 +8,6 @@ function NetInsurance({ startDate, endDate, option }) {
   const [loading, setLoading] = useState(true);
   const [ew, setEw] = useState([]);
 
-  //   console.log("Total", insuranceData);
   const fetchData = async () => {
     try {
       const params = {};
@@ -81,7 +80,43 @@ function NetInsurance({ startDate, endDate, option }) {
   const totalNetPremiumDenza = totalVoluntaryDenza + totalCompulsoryDenzq;
 
   if (loading) {
-    return <div className="text-center">Loading...</div>;
+    return (
+      <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg  ">
+        <div className="flex flex-col justify-center items-center h-full space-y-2">
+          <p className="text-gray-700 text-lg font-semibold text-center">
+            ไม่มีข้อมูลที่แสดงในขณะนี้
+          </p>
+          <p className="text-gray-500 text-sm text-center">
+            โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+          </p>
+          <div className="flex flex-row justify-center items-end space-x-4 relative  ">
+            <div className="circle animate-circle delay-0" />
+            <div className="circle animate-circle delay-1" />
+            <div className="circle animate-circle delay-2" />
+            <div className="circle animate-circle delay-3" />
+          </div>
+        </div>
+      </div>
+    );
+  } else if (insuranceData.length === 0 && insuranceDenza.length === 0) {
+    return (
+      <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg mt-5 min-h-[50vh] flex justify-center items-center">
+        <div className="flex flex-col justify-center items-center space-y-2">
+          <p className="text-gray-700 text-lg font-semibold text-center">
+            ไม่มีข้อมูลที่แสดงในขณะนี้
+          </p>
+          <p className="text-gray-500 text-sm text-center">
+            โปรดลองอีกครั้งในภายหลัง หรือเลือกช่วงเวลาที่แตกต่าง
+          </p>
+          <div className="flex flex-row justify-center items-end space-x-4 relative">
+            <div className="circle animate-circle delay-0" />
+            <div className="circle animate-circle delay-1" />
+            <div className="circle animate-circle delay-2" />
+            <div className="circle animate-circle delay-3" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

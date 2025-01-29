@@ -5,10 +5,8 @@ import axios from "axios";
 import { MdNavigateNext } from "react-icons/md";
 import Link from "next/link";
 import { SelectPicker } from "rsuite";
-import { FaCalendarAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import { th } from "date-fns/locale";
-import NetInsurance from "../dashBoard/NetInsurance";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 import Looding from "../../components/looding/Looding";
 function BYDPage({ startDate, endDate, option }) {
@@ -231,7 +229,9 @@ function BYDPage({ startDate, endDate, option }) {
                         key={index}
                         className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
                       >
-                        <p className="text-center text-xs">{item.x}</p>
+                        <p className="text-center text-xs">
+                          {item.x.replace(/_/g, " ")}
+                        </p>
                         <p className="text-center text-gray-500">
                           {new Intl.NumberFormat().format(item.count)}
                         </p>
@@ -335,7 +335,9 @@ function BYDPage({ startDate, endDate, option }) {
                     key={index}
                     className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
                   >
-                    <p className="text-center text-xs">{item.x}</p>
+                    <p className="text-center text-xs">
+                      {item.x.replace(/_/g, " ")}
+                    </p>
                     <p className="text-center text-gray-500">
                       {new Intl.NumberFormat().format(item.count)}
                     </p>
@@ -421,7 +423,6 @@ function BYDPage({ startDate, endDate, option }) {
           )}
         </div>
       </div>
-      {/* <NetInsurance  /> */}
     </>
   );
 }
