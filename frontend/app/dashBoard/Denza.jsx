@@ -131,7 +131,9 @@ function DenzaPage({ startDate, endDate, option }) {
                         key={index}
                         className="bg-white rounded-lg shadow-md p-4 text-gray-700 text-xs font-semibold flex flex-col items-center justify-center"
                       >
-                        <p className="text-center text-xs">{item.x}</p>
+                        <p className="text-center text-xs">
+                          {item.x.replace(/_/g, " ")}
+                        </p>
                         <p className="text-center text-gray-500">
                           {new Intl.NumberFormat().format(item.count)}
                         </p>
