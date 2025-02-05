@@ -9,6 +9,7 @@ import style from './Navbar.module.css'
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenOut, setIsOpenOut] = useState(false);
+  const [isOpenOther, setIsOpenOther] = useState(false);
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -27,6 +28,7 @@ function Navbar() {
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const toggleLogout = () => setIsOpenOut(!isOpenOut);
+  const toggleOther = () => setIsOpenOther(!isOpenOther);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -97,10 +99,55 @@ function Navbar() {
                   แดชบอร์ด
                 </Link>
               </li>
-              <li>
-                <Link href="/manageUser" className={style.navItem}>
-                  จัดการสิทธิ
-                </Link>
+              <li className="relative inline-block text-left">
+                <button
+                  type="button"
+                  className="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
+                  id="otherMenuButton"
+                  aria-expanded={isOpenOther}
+                  onClick={toggleOther}
+                >
+                  อื่นๆ
+                  <svg
+                    className="w-4 h-4 ml-1"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                <div
+                  className={`absolute left-0 transform translate-x-0 md:left-auto md:right-0 z-10 w-48 mt-2 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 ${
+                    isOpenOther ? "block" : "hidden"
+                  }`}
+                >
+                  <ul className="py-1">
+                    <li>
+                      <Link
+                        href="/manageUser"
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        จัดการสิทธ์
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/manageDealers"
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        จัดการดีลเลอร์
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
               </li>
               <li className="flex items-center space-x-2">
                 <div className="relative inline-block text-left" ref={dropdownRef}>
