@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DealerController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -47,7 +49,14 @@ Route::post('/getall_data', [DataController::class, 'getall']);
 Route::get('/getbyd_summary', [DataController::class, 'getbyd_summary']);
 Route::get('/getdenza_summary', [DataController::class, 'getdenza_summary']);
 Route::get('/getbyd_model', [DataController::class, 'getbyd_model']);
+Route::get('/getbyd_model_line', [DataController::class, 'getbyd_model_line']);
 Route::get('/getcost', [DataController::class, 'getcost']);
+Route::post('/get_market_share', [DashboardController::class, 'get_market_share']);
+
+Route::prefix('script')->group(function (){
+    Route::post('/map_dealer_code', [DashboardController::class, 'mapDealerCode']);
+});
+
 
 Route::get('/getall_insurance', [DataController::class, 'getall_insurance']);
 
@@ -63,6 +72,9 @@ Route::post('/detail_edit',function(Request $request){
 });
 Route::get('/getall_user',function(Request $request){
     return app(DataController::class)->getall_user($request);
+});
+Route::get('/getall_dealer_code',function(Request $request){
+    return app(DataController::class)->getall_dealer_code($request);
 });
 Route::get('/getall_menu',function(Request $request){
     return app(DataController::class)->getall_menu($request);
@@ -94,6 +106,10 @@ Route::post('/download_file',function(Request $request){
 
 Route::prefix('report')->group(function () {
     Route::post('/query', [ReportController::class, 'query']);
+});
+
+Route::prefix('manage_dealer')->group(function () {
+    Route::get('/list', [DealerController::class, 'list']);
 });
 
 
