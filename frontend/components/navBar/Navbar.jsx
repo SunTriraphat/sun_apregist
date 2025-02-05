@@ -102,6 +102,11 @@ function Navbar() {
                   จัดการสิทธิ
                 </Link>
               </li>
+              <li>
+                <Link href="/manageDealerCode" className={style.navItem}>
+                  Dealer Code
+                </Link>
+              </li>
               <li className="flex items-center space-x-2">
                 <div className="relative inline-block text-left" ref={dropdownRef}>
                   <button

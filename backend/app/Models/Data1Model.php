@@ -10,6 +10,10 @@ class Data1Model extends Model
     use HasFactory;
 
     protected $table = 'data1';
+    protected $fillable = [
+        'DealerCode'
+    ];
+    public $timestamps = false;
 
     public function insurance()
     {
