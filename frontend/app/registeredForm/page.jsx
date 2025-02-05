@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { AutoCompleteComponent } from '@syncfusion/ej2-react-dropdowns';
 import {
   Table,
   TableHeader,
@@ -44,6 +45,7 @@ import { capitalize } from "./utils";
 import { useDispatch, useSelector } from "react-redux";
 import { addShowData } from "../store/slice/showDataSlice";
 import CustomTable from "../../components/CustomTable";
+import CustomModal from "../../components/CustomModal";
 
 const statusColorMap = {
   Done: "success",
@@ -86,6 +88,7 @@ export default function App() {
   const [totalRecord, setTotalRecord] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [sportsData, setSportsData] = useState(['Badminton', 'Basketball', 'Cricket', 'Football', 'Golf', 'Gymnastics', 'Hockey', 'Rugby', 'Snooker', 'Tennis']);
   const [loadingModal, setLoadingModal] = useState(false);
   const [sortDescriptor, setSortDescriptor] = useState({
     column: "dealer_code",
@@ -107,6 +110,7 @@ export default function App() {
   const filteredProvinces = province.filter((val) =>
     val.name_th.toLowerCase().includes(searchValue.toLowerCase())
   );
+
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useDispatch();
@@ -135,68 +139,7 @@ export default function App() {
     return formatDate(d); // Format and return the new date
   };
 
-  // const fetchData = async (page) => {
-  //   try {
-  //     // const response = await axios.get(`${API_URL}showData`);
-  //     // const response = await axios.get(`${API_URL}getdata_main`);
-  //     const response = await axios.post(`${API_URL}getall_data`);
-  //     const province = await axios.get(`https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json`);
-  //     const responseInsurance = await axios.get(`${API_URL}getall_insurance`);
 
-
-  //     if (response.data && responseInsurance.data) {
-  //       const sortedData = response.data.map(item => {
-  //         // Find the matching insurance object
-  //         const matchingInsurance = responseInsurance.data.find(
-  //           insurance => insurance.vin_no === item.Vin
-  //         );
-
-
-  //         return matchingInsurance
-  //           ? {
-  //             ...item,
-  //             policy_no: matchingInsurance.policy_no,
-  //             start_date: formatDate(matchingInsurance.start_date),
-  //             end_date: addOneYear(matchingInsurance.start_date),
-  //             payment_month: matchingInsurance.payment_month,
-  //             remark: matchingInsurance.remark,
-  //             DateTimeUtc: formatDate(item.DateTimeUtc),
-  //             brand: 'byd',
-
-  //           }
-  //           : {
-  //             ...item,
-  //             policy_no: null,
-  //             start_date: null,
-  //             end_date: null,
-  //             payment_month: null,
-  //             remark: null,
-  //             DateTimeUtc: formatDate(item.DateTimeUtc),
-  //             brand: 'byd',
-
-  //           };
-  //       }).sort((a, b) => {
-
-  //         // If DateTimeUtc is the same, sort by start_date from matchingInsurance (descending order)
-  //         if (a.start_date === null) return 1; // Move nulls to the end
-  //         if (b.start_date === null) return -1; // Move nulls to the end
-  //         return new Date(b.start_date) - new Date(a.start_date); // Reverse comparison for descending order
-  //       });
-
-
-  //       console.log('sortedData', sortedData);
-
-  //       setData(sortedData);
-  //       // console.log('data',data); // Updated data with the new property
-  //     }
-
-  //     setProvince(province.data)
-  //     // setData(response.data);
-  //     setIsLoading(false)
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
 
   const fetchData = async (page) => {
     try {
@@ -205,13 +148,13 @@ export default function App() {
         axios.get(`https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json`),
         axios.get(`${API_URL}getall_insurance`)
       ]);
-  
+
       if (response.data && responseInsurance.data) {
         const insuranceLookup = responseInsurance.data.reduce((acc, insurance) => {
           acc[insurance.vin_no] = insurance;
           return acc;
         }, {});
-  
+
         const sortedData = response.data.map(item => {
           const matchingInsurance = insuranceLookup[item.Vin];
           return {
@@ -226,23 +169,25 @@ export default function App() {
           };
         }).sort((a, b) => {
           if (!a.start_date) return 1;
-          if (!b.start_date) return -1; 
-          return new Date(b.start_date) - new Date(a.start_date); 
+          if (!b.start_date) return -1;
+          return new Date(b.start_date) - new Date(a.start_date);
         });
-  
-        console.log('sortedData', sortedData);
-  
+
+
+
         setData(sortedData);
       }
-  
+
       setProvince(province.data);
-  
+      console.log('province', province.data);
+
+
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  
+
 
 
   const hasSearchFilter = Boolean(filterValue);
@@ -441,7 +386,7 @@ export default function App() {
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
     const files = Array.from(event.target.files); // Convert FileList to Array
     const validFiles = [];
-    console.log('files', event.target.files);
+
 
     files.forEach((file) => {
       if (file.size > MAX_FILE_SIZE) {
@@ -541,8 +486,253 @@ export default function App() {
 
       {isModalOpen && (
         <>
+          <CustomModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            size="lg"
+            color="gray-100"
+            footer={
+              <div className="flex justify-end">
+                {
+                  loadingModal ? (
+                    <Button isLoading color="primary">
+                      Loading
+                    </Button>
+                  ) :
+                    <>
+                      <Button color="danger" variant="light" onPress={() => setIsModalOpen(false)} disabled={loadingModal}>
+                        Close
+                      </Button>
+                      <Button color="primary" type="submit" form="modalForm" disabled={loadingModal}>
+                        Submit
+                      </Button>
+                    </>
 
-          <Modal scrollBehavior={"outside"} isOpen={isModalOpen} size={"3xl"} hideCloseButton={true} onClose={closeModal} >
+                }
+              </div>
+            }
+          >
+            <form id="modalForm" onSubmit={handleSubmit} className="grid gap-4">
+
+              <div className="grid grid-cols-2 gap-4">
+
+                <div>
+                  <label htmlFor="receive_document_date" className="block text-gray-700 font-medium mb-1">
+                    รับเอกสาร:
+                  </label>
+                  <Input
+                    type="date"
+                    value={detailData.receive_document_date
+                      ? new Date(detailData.receive_document_date).toISOString().split('T')[0]
+                      : ''}
+                    id="receive_document_date"
+                    name="receive_document_date"
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+
+                </div>
+
+                <div>
+                  <label htmlFor="receive_document_remark" className="block text-gray-700 font-medium mb-1">
+                    หมายเหตุ:
+                  </label>
+                  <Input
+                    type="text"
+                    value={detailData.receive_document_remark || ''}
+                    id="receive_document_remark"
+                    name="receive_document_remark"
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="send_document_date" className="block text-gray-700 font-medium mb-1">
+                    ส่งเอกสาร:
+                  </label>
+                  <Input
+                    type="date"
+                    value={detailData.send_document_date
+                      ? new Date(detailData.send_document_date).toISOString().split('T')[0]
+                      : ''}
+                    id="send_document_date"
+                    name="send_document_date"
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+                  {/* <input type="text" id="numberInput" pattern="^[1-9]\d*$" title="Enter a positive number without leading zeros" /> */}
+
+                </div>
+                <div>
+                  <label htmlFor="send_document_remark" className="block text-gray-700 font-medium mb-1">
+                    หมายเหตุ:
+                  </label>
+                  <Input
+                    type="text"
+                    value={detailData.send_document_remark || ''}
+                    id="send_document_remark"
+                    name="send_document_remark"
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="registration" className="block text-gray-700 font-medium mb-1">
+                    ทะเบียน:
+                  </label>
+                  <Input
+                    type="text"
+                    value={detailData.registration || ''}
+                    id="registration"
+                    name="registration"
+                    onChange={handleChange}
+                    className="w-full"
+                   
+                  />
+                </div>
+                <div>
+                  <label htmlFor="province" className="block text-gray-700 font-medium mb-1">
+                    จังหวัด:
+                  </label>
+                  {/* <Autocomplete
+                    className="w-full"
+                    placeholder="ค้นหา..."
+                    id="province"
+                    name="province"
+                    onChange={setSearchValue}
+                    value={detailData.province || ''}
+                  >
+                    {province.map((val) => (
+                      <AutocompleteItem key={val.id} value={val.id}>
+                        {val.name_th}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete> */}
+                  <AutoCompleteComponent
+                    id="province"
+                    name="province"
+                    value={detailData.province || ''}
+                    fields={{ value: 'name_th' }}
+                    dataSource={province}
+                    placeholder="ค้นหาจังหวัด"
+                    allowFiltering={true}
+                    onChange={handleChange}
+                   
+                    style={{
+                      width: '100%',
+                      maxWidth: '300px',
+                      borderRadius: '8px',
+                      // border: '1px solid #ccc',
+                      padding: '8px',
+                      position: 'relative',
+                      backgroundColor: '#F5F5F5',
+                      boxShadow: '0 0.5px 0px rgba(0, 0, 0, 0.1)',
+                    }}
+                    itemTemplate={(item) => (
+                      <div
+                        style={{
+                          padding: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                         border: '1px solid #ccc',
+                          backgroundColor: '#F5F5F5',
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          boxShadow: '0 0.5px 0px rgba(0, 0, 0, 0.1)',
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: '250px',
+                            color: '#333',
+                            fontWeight: '500',
+                            paddingTop: '4px',
+                            lineHeight: 'normal',
+                            cursor:'pointer'
+                          }}
+                        >
+                          {item.name_th}
+                        </span>
+                      </div>
+                    )}
+                    // popupProps={{
+                    //   height: '200px', // กำหนดความสูงของ dropdown
+                    //   width: 'auto',   // ความกว้างของ dropdown
+                    //   position: 'absolute', // ใช้ `absolute` เพื่อกำหนดตำแหน่ง
+                    // }}
+                    // popupContainer={document.body} // กำหนดให้ popup แสดงใต้ input โดยไม่ทับกัน
+                  />
+
+                </div>
+                <div>
+                  <label htmlFor="upload" >
+                    Upload
+                  </label>
+                  <Input
+                    id="file"
+                    name="file"
+                    type="file"
+                    multiple
+                    onChange={handleFileChange} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label htmlFor="remark" className="block text-gray-700 font-medium mb-1">
+                    หมายเหตุ
+                  </label>
+                  <Textarea
+                    value={detailData.remark || ''}
+                    className="w-full"
+                    id="remark"
+                    name="remark"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <div className="mt-2">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded mb-2">
+
+                    <p className="text-sm text-gray-600">
+                      {file.name}
+                    </p>
+                    <div className="flex space-x-1">
+
+                      <Button
+                        onClick={() => handleDownload(file.path, file.name)}
+                        className="text-blue-500 hover:text-blue-700  bg-transparent"
+
+                      >
+
+                        ดาวน์โหลด
+                      </Button>
+                      <Button
+
+                        onClick={() => removeFile(index)}
+                        className="text-red-500 hover:text-red-700 bg-transparent"
+                      >
+                        ลบ
+                      </Button>
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+              <Input
+                type="hidden"
+                id="vin_no"
+                name="vin_no"
+                value={detailData.vin_no || ''}
+              />
+            </form>
+          </CustomModal>
+          {/* <Modal scrollBehavior={"outside"} isOpen={isModalOpen} size={"3xl"} hideCloseButton={true} onClose={closeModal} >
 
             <ModalContent>
               {(onClose) => (
@@ -681,9 +871,7 @@ export default function App() {
                       <div className="mt-2">
                         {selectedFiles.map((file, index) => (
                           <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded mb-2">
-                            {/* <p className="text-sm text-gray-600">
-                              {file.name} ({(file.size / 1024).toFixed(2)} KB)
-                            </p> */}
+                           
                             <p className="text-sm text-gray-600">
                               {file.name}
                             </p>
@@ -742,7 +930,7 @@ export default function App() {
                 </div>
               )}
             </ModalContent>
-          </Modal>
+          </Modal> */}
         </>
 
       )}

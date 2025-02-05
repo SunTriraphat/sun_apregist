@@ -23,7 +23,7 @@ export default function CustomModal({
       }`}
     >
       <div
-        className={`w-full ${sizeClasses[size]} bg-${color} p-6 rounded-lg shadow-lg relative`}
+        className={`${sizeClasses[size]} bg-${color} p-6 rounded-lg shadow-lg relative`}
       >
         {/* Close button */}
         <button

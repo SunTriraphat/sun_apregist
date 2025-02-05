@@ -57,3 +57,24 @@
  .button-link:hover {
      text-decoration: none;
  }
+
+/* ปรับตำแหน่งของลูกศร */
+.e-dropdownbase .e-input-group .e-ddl-icon {
+    position: absolute !important; /* ใช้ absolute เพื่อจัดตำแหน่งลูกศร */
+    top: 50% !important; /* จัดแนวกลางในแนวตั้ง */
+    right: 10px !important; /* ขยับลูกศรไปทางขวา */
+    transform: translateY(-50%) !important; /* ทำให้ลูกศรอยู่ตรงกลางแนวตั้ง */
+  }
+  
+  /* ปรับการตั้งค่าของ <select> ที่ซ่อนอยู่ */
+  #province_hidden {
+    position: absolute !important; /* ใช้ absolute เพื่อจัดตำแหน่ง */
+    top: 0; /* วางตำแหน่งด้านบน */
+    right: 0; /* วางตำแหน่งด้านขวา */
+    z-index: -1; /* ทำให้ <select> ซ่อนอยู่ข้างหลัง */
+    opacity: 0; /* ซ่อน <select> */
+  }
+ 
+
+  
+  

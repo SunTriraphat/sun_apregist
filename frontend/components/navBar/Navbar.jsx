@@ -140,7 +140,7 @@ function Navbar() {
                     </li>
                     <li>
                       <Link
-                        href="/manageDealers"
+                        href="/manageDealerCode"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                       >
                         จัดการดีลเลอร์
@@ -149,11 +149,11 @@ function Navbar() {
                   </ul>
                 </div>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/manageDealerCode" className={style.navItem}>
                   Dealer Code
                 </Link>
-              </li>
+              </li> */}
               <li className="flex items-center space-x-2">
                 <div className="relative inline-block text-left" ref={dropdownRef}>
                   <button
