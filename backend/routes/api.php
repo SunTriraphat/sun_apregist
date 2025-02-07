@@ -92,6 +92,18 @@ Route::post('/import_info_form',function(Request $request){
     return app(DataController::class)->import_info_form($request);
 });
 
+//dealer 
+Route::post('/detail_dealer',function(Request $request){
+    return app(DataController::class)->detail_dealer($request);
+});
+Route::post('/edit_dealer',function(Request $request){
+    return app(DataController::class)->edit_dealer($request);
+});
+
+Route::post('/update_dealer_code_data1',function(Request $request){
+    return app(DataController::class)->update_dealer_code_data1($request);
+});
+
 //permission
 Route::post('/edit_permission',function(Request $request){
     return app(DataController::class)->edit_permission($request);

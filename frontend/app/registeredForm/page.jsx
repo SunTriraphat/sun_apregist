@@ -599,20 +599,7 @@ export default function App() {
                   <label htmlFor="province" className="block text-gray-700 font-medium mb-1">
                     จังหวัด:
                   </label>
-                  {/* <Autocomplete
-                    className="w-full"
-                    placeholder="ค้นหา..."
-                    id="province"
-                    name="province"
-                    onChange={setSearchValue}
-                    value={detailData.province || ''}
-                  >
-                    {province.map((val) => (
-                      <AutocompleteItem key={val.id} value={val.id}>
-                        {val.name_th}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete> */}
+                 
                   <AutoCompleteComponent
                     id="province"
                     name="province"

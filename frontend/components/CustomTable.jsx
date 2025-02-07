@@ -22,7 +22,7 @@ import * as XLSX from "xlsx";
 import ImportComponent from "./Import"
 import CustomModal from "./CustomModal";
 
-export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key, topContent, isAdd, isImport }) {
+export default function CustomTable({ columns, data, renderFunction, rowsPerPage = 5, searchInColumn = false, defaultColumn = columns[0].key, topContent, isAdd, isImport,isUpdateDealer }) {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [pages, setPages] = useState("");
@@ -71,6 +71,20 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
     return filteredData.slice(start, end);
   }, [page, filteredData, rowsPerPage]);
 
+  const updateDealerCode = async () => {
+    console.log('updateDealerCode');
+    try {
+      const response = await fetch(`${API_URL}update_dealer_code_data1`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('response', response);
+    } catch (error) {
+      
+    }
+  };
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -255,6 +269,11 @@ export default function CustomTable({ columns, data, renderFunction, rowsPerPage
         {isAdd == true ?
           <div className="relative flex items-center gap-2 ml-auto mr-7">
             <Button size="sm" onClick={() => openModal()} color="primary">Add</Button>
+          </div>
+          : null}
+        {isUpdateDealer == true ?
+          <div className="relative flex items-center gap-2 ml-auto mr-7">
+            <Button size="sm" onClick={() => updateDealerCode()} color="warning">Update Dealer Code</Button>
           </div>
           : null}
         {isImport == true ?

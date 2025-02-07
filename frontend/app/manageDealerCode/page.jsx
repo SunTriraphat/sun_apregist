@@ -4,6 +4,7 @@ import Navbar from "../../components/navBar/Navbar";
 import axios from "axios";
 import numeral from "numeral";
 import Swal from 'sweetalert2';
+import CustomModal from "../../components/CustomModal";
 import {
     Table,
     TableHeader,
@@ -94,6 +95,8 @@ export default function App() {
             // const response = await axios.get(`${API_URL}getdata_main`);
             const response = await axios.get(`${API_URL}getall_dealer_code`);
             const responseMenu = await axios.get(`${API_URL}getall_menu`);
+            console.log(response.data);
+            
             setData(response.data);
             setAllMenu(responseMenu.data);
             setIsLoading(false)
@@ -135,11 +138,12 @@ export default function App() {
     }, [showData, filterValue, statusFilter]);
 
     const openModal = async (id) => {
+        console.log('dealer id', id);
 
         try {
             // const response = await axios.get(`${API_URL}showData`);
 
-            const response = await axios.post(`${API_URL}detail_user`, { id: id }, {
+            const response = await axios.post(`${API_URL}detail_dealer`, { id: id }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -205,17 +209,6 @@ export default function App() {
                         {/* <Button size="sm" onClick={() => openPermissionModal(item["id"])} color="primary">Permission</Button> */}
                     </div>
                 );
-
-                return (
-                    <Chip
-                        className="capitalize"
-                        color={statusColorMap[cellValue] || "default"}
-                        size="sm"
-                        variant="flat"
-                    >
-                        {cellValue}
-                    </Chip>
-                );
             default:
                 return cellValue;
         }
@@ -247,7 +240,7 @@ export default function App() {
             if (result.isConfirmed) {
                 setIsModalOpen(true)
                 try {
-                    const response = await fetch(`${API_URL}edit_user`, {
+                    const response = await fetch(`${API_URL}edit_dealer`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -404,165 +397,65 @@ export default function App() {
         <div>
             <Navbar />
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} size={"md"} hideCloseButton={true} onClose={closeModal}>
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">แก้ไขข้อมูล</ModalHeader>
-                                <ModalBody>
-                                    <form id="modalForm" onSubmit={handleSubmit}>
-                                        <Input label="ชื่อ"
-                                            type="text"
-                                            value={detailData.name ? detailData.name : ''}
-                                            id="name"
-                                            name="name"
-                                            onChange={handleChange}
-                                            className="mb-4"
-                                        />
-                                        <Input label="ชื่อผู้ใช้งาน"
-                                            type="text"
-                                            value={detailData.username ? detailData.username : ''}
-                                            id="username"
-                                            name="username"
-                                            onChange={handleChange}
-                                            className="mb-4"
-                                        />
-                                        <Input label="อีเมลล์"
-                                            type="text"
-                                            value={detailData.email ? detailData.email : ''}
-                                            id="email"
-                                            name="email"
-                                            onChange={handleChange}
-                                            className="mb-4"
-                                        />
-                                        <Input label="รหัสผ่าน"
-                                            type="password"
-                                            value={detailData.salt ? detailData.salt : ''}
-                                            id="salt"
-                                            name="salt"
-                                            onChange={handleChange}
-                                            className="mb-4"
-                                        />
-                                        <Input
-                                            type="hidden"
-                                            id="id"
-                                            name="id"
-                                            value={detailData.id ? detailData.id : ''}
-                                        />
+                <CustomModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    size="lg"
+                    color="gray-100"
+                    footer={
+                        <div className="flex justify-end">
+                            {
+                                loadingModal ? (
+                                    <Button isLoading color="primary">
+                                        Loading
+                                    </Button>
+                                ) :
+                                    <>
+                                        <Button color="danger" variant="light" onPress={() => setIsModalOpen(false)} disabled={loadingModal}>
+                                            Close
+                                        </Button>
+                                        <Button color="primary" type="submit" form="modalForm" disabled={loadingModal}>
+                                            Submit
+                                        </Button>
+                                    </>
 
-                                    </form>
-                                </ModalBody>
-                                <ModalFooter>
-                                    {
-                                        loadingModal ? (
-                                            <Button isLoading color="primary">
-                                                Loading
-                                            </Button>
-                                        ) :
-                                            <>
-                                                <Button color="danger" variant="light" onPress={onClose} disabled={loadingModal}>
-                                                    Close
-                                                </Button>
-                                                <Button color="primary" type="submit" form="modalForm" disabled={loadingModal}>
-                                                    Submit
-                                                </Button>
-                                            </>
-                                    }
-                                </ModalFooter>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            )}
-            {isModalPermissionOpen && (
-                <Modal isOpen={isModalPermissionOpen} size={"3xl"} hideCloseButton={true} onClose={closePermissionModal}>
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">สิทธิการใช้งาน</ModalHeader>
-                                <ModalBody>
-                                    <form id="modalPermissionForm" onSubmit={handlePermissionSubmit}>
-                                        <table className="table-auto w-full border-collapse border border-gray-300">
-                                            <thead>
-                                                <tr>
+                            }
+                        </div>
+                    }
+                >
+                    <form id="modalForm" onSubmit={handleSubmit}>
+                        <Input label="Dealer Code"
+                            type="text"
+                            value={detailData.dealerCode ? detailData.dealerCode : ''}
+                            id="dealerCode"
+                            name="dealerCode"
+                            onChange={handleChange}
+                            className="mb-4"
+                        />
+                        <label htmlFor="dealerName">
+                        Dealer Name <small style={{ color: 'red' }}>(ไม่สามารถแก้ไขได้)</small>
+                        </label>
+                        <Input
+                            type="text"
+                            value={detailData.dealerName ? detailData.dealerName : ''}
+                            id="dealerName"
+                            name="dealerName"
+                            onChange={handleChange}
+                            className="mb-4"
+                            disabled
+                        />
 
-                                                    <th className="border border-gray-300 px-4 py-2">menu</th>
-                                                    <th className="border border-gray-300 px-4 py-2">view</th>
-                                                    <th className="border border-gray-300 px-4 py-2">create</th>
-                                                    <th className="border border-gray-300 px-4 py-2">edit</th>
-                                                    <th className="border border-gray-300 px-4 py-2">delete</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                        <Input
+                            type="hidden"
+                            id="id"
+                            name="id"
+                            value={detailData.id ? detailData.id : ''}
+                        />
 
-                                                {allMenu.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td className="border border-gray-300 px-4 py-2">{item.name || ""}</td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                name="is_view"
-                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_view == 1) ? true : false}
-
-                                                                onChange={(e) => handleCheckboxChange(e, item)}
-                                                            />
-                                                        </td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                name="is_create"
-                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_create == 1) ? true : false}
-
-                                                                onChange={(e) => handleCheckboxChange(e, item)}
-                                                            />
-                                                        </td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                name="is_edit"
-                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_edit == 1) ? true : false}
-
-                                                                onChange={(e) => handleCheckboxChange(e, item)}
-                                                            />
-                                                        </td>
-                                                        <td className="border border-gray-300 px-4 py-2 text-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                name="is_delete"
-                                                                checked={permissions.find(permission => permission.menu === item.code && permission.is_delete == 1) ? true : false}
-
-                                                                onChange={(e) => handleCheckboxChange(e, item)}
-                                                            />
-                                                        </td>
-
-                                                    </tr>
-                                                ))}
-
-                                            </tbody>
-                                        </table>
-                                    </form>
-                                </ModalBody>
-                                <ModalFooter>
-                                    {loadingModal ? (
-                                        <Button isLoading color="primary">Loading</Button>
-                                    ) : (
-                                        <>
-                                            <Button color="danger" variant="light" onPress={onClose} disabled={loadingModal}>
-                                                Close
-                                            </Button>
-                                            <Button color="primary" type="submit" form="modalPermissionForm" disabled={loadingModal}>
-                                                Submit
-                                            </Button>
-                                        </>
-                                    )}
-                                </ModalFooter>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
+                    </form>
+                </CustomModal>
 
             )}
-
 
             {/* {data.length > 0 && isLoading == false ? */}
             <CustomTable
@@ -573,8 +466,7 @@ export default function App() {
                 searchInColumn={true}
                 defaultColumn={columns[1].key}
                 topContent={"Dealer code"}
-                isAdd={true}
-
+                isUpdateDealer={true}
             />
             {/* : <div className="flex h-screen justify-center items-center">
           <Spinner size="lg" label="Loading...." />

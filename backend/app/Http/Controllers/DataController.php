@@ -322,19 +322,13 @@ class DataController extends Controller
 
         $data = DB::connection('byd')->table('tb_dealer')
             ->select('tb_dealer.*')
+            ->orderBy('tb_dealer.dealerCode', 'asc')
             ->get();
 
         return response()->json($data);
     }
     public function getall_menu(Request $request)
     {
-
-        // $data = DB::connection('byd')->table('data')
-        //     ->leftJoin('insurance', DB::raw('`data`.`VIN No.`'), '=', 'insurance.vin_no')
-        //     ->select('data.*', 'insurance.*')
-        //     ->where('insurance.policy_no', $policy_no)
-        //     ->get();
-
         $data = DB::connection('byd')->table('menu')
             ->select('menu.*')
             ->get();
@@ -386,11 +380,46 @@ class DataController extends Controller
                 'password' => bcrypt($request->salt),
                 'salt' => $request->salt
             ]);
-        // $data = DB::connection('byd')->table('users')
-        //     ->select('users.*')
-        //     ->where('users.id', $id)
-        //     ->get();
+        
+        return response()->json($data);
+    }
 
+    //dealer
+    public function detail_dealer(Request $request)
+    {
+        $id = $request->input('id');
+
+        $data = DB::connection('byd')->table('tb_dealer')
+            ->select('tb_dealer.*')
+            ->where('tb_dealer.id', $id)
+            ->get();
+
+        return response()->json($data);
+    }
+    public function edit_dealer(Request $request)
+    {
+        $id = $request->input('id');
+        $data = DB::connection('byd')
+            ->table('tb_dealer')
+            ->where('id', $id)
+            ->update([
+                'dealerCode' => $request->dealerCode,
+            ]);
+        
+        return response()->json($data);
+    }
+
+
+    public function update_dealer_code_data1(Request $request)
+    {
+       
+        $data = DB::connection('byd')->table('data1')
+        ->join('tb_dealer', 'tb_dealer.dealerName', '=', 'data1.DealershipName')
+        ->whereNull('data1.DealerCode')
+        ->update([
+            'data1.DealerCode' => DB::raw('tb_dealer.dealerCode')
+        ]);
+        
         return response()->json($data);
     }
     public function import_info_form(Request $request)
@@ -401,7 +430,7 @@ class DataController extends Controller
             ->getColumnListing('data1');
 
         $dealerData = DB::connection('byd')->table('tb_dealer')
-            ->select('tb_dealer.dealerName','tb_dealer.dealerCode')
+            ->select('tb_dealer.dealerName', 'tb_dealer.dealerCode')
             ->get();
 
         // Filter input data to include only valid columns
@@ -422,12 +451,12 @@ class DataController extends Controller
         $processedData = collect($request->all())->map(function ($item) use ($tableColumns, $dealerData) {
             // Filter keys to include only those in the table schema
             $filteredItem = collect($item)->only($tableColumns);
-           
+
             // Add missing columns with default values (e.g., null)
             foreach ($tableColumns as $column) {
                 if (!isset($filteredItem[$column])) {
                     $filteredItem[$column] = null; // Use a default value as needed
-                    
+
                 }
             }
             unset($filteredItem['id']);
@@ -436,20 +465,20 @@ class DataController extends Controller
 
             // Add dealer code if a match is found
             if ($matchingDealer) {
-                
+
                 $filteredItem['DealerCode'] = $matchingDealer->dealerCode;
-            }else{
-                
+            } else {
+
                 $filteredItem['DealerCode'] = null;
                 DB::connection('byd')
-                ->table('tb_dealer')
-                ->insert(['dealerName' => $filteredItem['DealershipName'], 'dealerCode' => null]);
+                    ->table('tb_dealer')
+                    ->insert(['dealerName' => $filteredItem['DealershipName'], 'dealerCode' => null]);
             }
-            
+
             return $filteredItem->toArray();
         })->toArray();
 
-    
+
         // Insert the processed data into the database
         $isInserted = DB::connection('byd')
             ->table('data1')
